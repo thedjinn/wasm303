@@ -1,0 +1,4 @@
+/node_modules
+/dist
+/kernel/target
+/public/kernel.wasm
