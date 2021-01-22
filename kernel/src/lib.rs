@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::cell::RefCell;
 
 mod delay;
 mod distortion;
@@ -12,26 +12,26 @@ mod vco;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-lazy_static::lazy_static! {
-    static ref KERNEL: Mutex<kernel::Kernel> = Mutex::new(kernel::Kernel::new());
+thread_local! {
+    static KERNEL: Box<RefCell<kernel::Kernel>> = Box::new(RefCell::new(kernel::Kernel::new()));
 }
 
 #[no_mangle]
 pub extern "C" fn initialize() {
-    KERNEL.lock().unwrap().initialize();
+    KERNEL.with(|k| k.borrow_mut().initialize());
 }
 
 #[no_mangle]
 pub extern "C" fn process() {
-    KERNEL.lock().unwrap().process();
+    KERNEL.with(|k| k.borrow_mut().process())
 }
 
 #[no_mangle]
 pub fn get_left_pointer() -> *mut f32 {
-    return KERNEL.lock().unwrap().left_buffer.as_mut_ptr();
+    KERNEL.with(|k| k.borrow_mut().left_buffer.as_mut_ptr())
 }
 
 #[no_mangle]
 pub fn get_right_pointer() -> *mut f32 {
-    return KERNEL.lock().unwrap().right_buffer.as_mut_ptr();
+    KERNEL.with(|k| k.borrow_mut().right_buffer.as_mut_ptr())
 }
