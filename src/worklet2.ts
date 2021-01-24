@@ -14,6 +14,32 @@ declare var AudioWorkletProcessor: {
 
 declare function registerProcessor(name: string, processorCtor: (new (options?: AudioWorkletNodeOptions) => AudioWorkletProcessor) & { parameterDescriptors?: AudioParamDescriptor[]; }): undefined;
 
+class Bridge {
+    wasm: WebAssembly.Instance;
+    buffer: Uint8Array;
+
+    bootstrap(wasm: WebAssembly.Instance) {
+        this.wasm = wasm;
+        this.buffer = new Uint8Array((wasm.exports.memory as WebAssembly.Memory).buffer);
+    }
+
+    getString(ptr: number, len: number): string {
+        // Get a fresh Uint8Array if the wasm memory buffer was moved
+        const buffer = (this.wasm.exports.memory as WebAssembly.Memory).buffer;
+        if (this.buffer !== buffer) {
+            this.buffer = new Uint8Array(buffer);
+        }
+
+        return String.fromCharCode.apply(null, this.buffer.slice(ptr, ptr + len));
+    }
+
+    wrap(fn: Function): Function {
+        return (ptr: number, len: number) => {
+            fn(this.getString(ptr, len));
+        };
+    }
+}
+
 //interface Kernel extends Omit<WebAssembly.Instance, "exports"> {
 interface Kernel extends WebAssembly.Instance {
     exports: {
@@ -31,6 +57,7 @@ interface Kernel extends WebAssembly.Instance {
 
 class Processor extends AudioWorkletProcessor {
     wasm: Kernel;
+    bridge: Bridge;
 
     leftBuffer: Float32Array;
     rightBuffer: Float32Array;
@@ -45,17 +72,22 @@ class Processor extends AudioWorkletProcessor {
         console.log(event.data);
 
         if (event.data.command === "bootstrap") {
+            this.bridge = new Bridge();
+
             const imports = {
                 env: {
+                    console_log: this.bridge.wrap(console.log),
+                    console_error: this.bridge.wrap(console.error),
                 }
             };
 
             WebAssembly.instantiate(event.data.payload, imports).then(webAssembly => {
                 this.wasm = webAssembly.instance as Kernel;
+                this.bridge.bootstrap(this.wasm);
 
                 //this._wasm.exports.memory.grow(250)
 
-                console.log(this.wasm.exports.initialize());
+                this.wasm.exports.initialize();
 
                 const bufferSize = 128; // Note: Web Audio API nodes use a fixed 128-sample buffer size per channel
 
