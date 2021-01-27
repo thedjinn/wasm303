@@ -51,13 +51,13 @@ class Engine {
 
         node.connect(context.destination);
 
-        const sendStorage = new SharedArrayBuffer(40);
-        const receiveStorage = new SharedArrayBuffer(40);
+        const sendStorage = new SharedArrayBuffer(4096);
+        const receiveStorage = new SharedArrayBuffer(4096);
 
         this.sendBuffer = new RingBuffer(sendStorage);
         this.receiveBuffer = new RingBuffer(receiveStorage);
 
-        this.programBuffer = new Uint8Array(32);
+        this.programBuffer = new Uint8Array(1024);
 
         // Send kernel to worklet
         node.port.postMessage({
