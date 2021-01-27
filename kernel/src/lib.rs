@@ -54,8 +54,8 @@ pub extern "C" fn initialize() {
 }
 
 #[no_mangle]
-pub extern "C" fn process() {
-    KERNEL.with(|k| k.borrow_mut().process())
+pub extern "C" fn process(program_size: u32) -> u32 {
+    KERNEL.with(|k| k.borrow_mut().process(program_size))
 }
 
 #[no_mangle]
@@ -66,4 +66,13 @@ pub fn get_left_pointer() -> *mut f32 {
 #[no_mangle]
 pub fn get_right_pointer() -> *mut f32 {
     KERNEL.with(|k| k.borrow_mut().right_buffer.as_mut_ptr())
+}
+
+#[no_mangle]
+pub fn get_program_pointer() -> *mut u8 {
+    KERNEL.with(|k| k.borrow_mut().program_buffer.as_mut_ptr())
+}
+
+#[no_mangle]
+pub fn handle_message() {
 }

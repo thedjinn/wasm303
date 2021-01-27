@@ -1,5 +1,9 @@
+import RingBuffer from "./RingBuffer";
+
 console.log("worklet bootstrapped");
 
+// TypeScript doesn't understand audio worklets, so we'll have to provide type
+// declarations ourselves.
 interface AudioWorkletProcessor {
     readonly port: MessagePort;
 
@@ -44,10 +48,11 @@ class Bridge {
 interface Kernel extends WebAssembly.Instance {
     exports: {
         initialize(): void;
-        process(): void;
+        process(programSize: number): number;
 
         get_left_pointer(): number;
         get_right_pointer(): number;
+        get_program_pointer(): number;
 
         handle_message(): void;
 
@@ -59,8 +64,13 @@ class Processor extends AudioWorkletProcessor {
     wasm: Kernel;
     bridge: Bridge;
 
+    sendBuffer: RingBuffer;
+    receiveBuffer: RingBuffer;
+
     leftBuffer: Float32Array;
     rightBuffer: Float32Array;
+
+    programBuffer: Uint8Array;
 
     constructor(options?: AudioWorkletNodeOptions) {
         super(options);
@@ -77,11 +87,11 @@ class Processor extends AudioWorkletProcessor {
             const imports = {
                 env: {
                     console_log: this.bridge.wrap(console.log),
-                    console_error: this.bridge.wrap(console.error),
+                    console_error: this.bridge.wrap(console.error)
                 }
             };
 
-            WebAssembly.instantiate(event.data.payload, imports).then(webAssembly => {
+            WebAssembly.instantiate(event.data.kernel, imports).then(webAssembly => {
                 this.wasm = webAssembly.instance as Kernel;
                 this.bridge.bootstrap(this.wasm);
 
@@ -94,6 +104,12 @@ class Processor extends AudioWorkletProcessor {
                 this.leftBuffer = new Float32Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_left_pointer(), bufferSize);
                 this.rightBuffer = new Float32Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_right_pointer(), bufferSize);
 
+                this.programBuffer = new Uint8Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_program_pointer(), 1024);
+
+                this.sendBuffer = new RingBuffer(event.data.sendStorage);
+                this.receiveBuffer = new RingBuffer(event.data.receiveStorage);
+
+                // TODO: Send initialization completed message
                 console.log("Kernel initialized");
             });
         } else {
@@ -107,10 +123,18 @@ class Processor extends AudioWorkletProcessor {
             return true;
         }
 
+        // Send ringbuffer data to wasm
+        let programSize = this.receiveBuffer.read(this.programBuffer, 1024);
+
         // Process inside wasm
-        this.wasm.exports.process();
+        programSize = this.wasm.exports.process(programSize);
         outputs[0][0].set(this.leftBuffer);
         outputs[0][1].set(this.rightBuffer);
+
+        // Send processed program buffer back to frontend
+        if (programSize > 0) {
+            this.sendBuffer.write(this.programBuffer, programSize);
+        }
 
         return true;
     }
