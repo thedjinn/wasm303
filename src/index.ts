@@ -91,8 +91,6 @@ class Engine {
                 result.value.then(this.waitCallback);
                 return;
             }
-
-            console.log("sync response, trying again");
         }
     }
 
