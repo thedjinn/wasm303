@@ -60,7 +60,6 @@ export default class RingBuffer {
             return 0;
         }
 
-
         // Compute bytes to write and first/last split
         let bytesWritten;
         if (writePointer >= readPointer) {
