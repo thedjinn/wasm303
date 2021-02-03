@@ -135,7 +135,7 @@ impl R303 {
             self.amplitude_envelope = (1.0 / self.amplitude_multiplier) * step.is_enabled as u32 as f32;
 
             // calculate target pitch
-            let pitch = step.pitch - step.has_down as u32 * 12 + step.has_up as u32 * 12;
+            let pitch = step.pitch - step.has_down as u8 * 12 + step.has_up as u8 * 12;
 
             // VCO parameters
             if step.has_slide {

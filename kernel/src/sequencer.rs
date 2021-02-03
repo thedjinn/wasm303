@@ -1,7 +1,7 @@
 use crate::kernel::SAMPLE_RATE;
 
 pub struct Step {
-    pub pitch: u32,
+    pub pitch: u8,
     pub is_enabled: bool,
     pub has_accent: bool,
     pub has_slide: bool,
