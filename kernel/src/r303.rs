@@ -144,6 +144,11 @@ impl R303 {
                 self.filter_envelope = 1.0 / self.filter_multiplier;
                 self.vco.reset(pitch as f32);
             }
+
+            // Tell VM that we advanced a step
+            let mut vm = self.vm.borrow_mut();
+            vm.push_opcode(Opcode::SetSequencerStep);
+            vm.push_u8(self.sequencer.pattern_position as u8);
         }
 
         // TODO: set amplitude_envelope to 0 when not running sequencer

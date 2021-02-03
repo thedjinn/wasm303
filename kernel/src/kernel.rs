@@ -40,16 +40,18 @@ impl Kernel {
     }
 
     pub fn process(&mut self, program_size: u32) -> u32 {
-        let mut vm = self.vm.borrow_mut();
+        {
+            let mut vm = self.vm.borrow_mut();
 
-        // Execute VM opcodes
-        vm.set_position(program_size as usize);
+            // Execute VM opcodes
+            vm.set_position(program_size as usize);
 
-        for instruction in vm.into_iter() {
-            self.r303.execute(instruction);
+            for instruction in vm.into_iter() {
+                self.r303.execute(instruction);
+            }
+
+            vm.drain();
         }
-
-        vm.drain();
 
         // Fill audio buffer
         for i in 0..BUFFER_SIZE {
@@ -61,8 +63,6 @@ impl Kernel {
             self.current_sample += 1;
         }
 
-        vm.push(123);
-
-        return vm.get_position() as u32;
+        return self.vm.borrow_mut().get_position() as u32;
     }
 }

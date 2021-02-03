@@ -17,7 +17,7 @@ pub struct Sequencer {
     pub is_running: bool,
     pub sample_position: u32,
     step_length: u32,
-    pattern_position: usize,
+    pub pattern_position: usize,
 
     patterns: Vec<Pattern>,
     current_pattern: usize,
@@ -91,7 +91,7 @@ impl Sequencer {
         }
 
         // return new step
-        return Some(&self.patterns[self.current_pattern].steps[self.pattern_position]);
+        Some(&self.patterns[self.current_pattern].steps[self.pattern_position])
     }
 }
 

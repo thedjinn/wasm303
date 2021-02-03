@@ -85,7 +85,7 @@ class Engine {
             const bytesRead = this.receiveBuffer.read(this.programBuffer, this.programBuffer.length);
 
             // TODO: Process receive buffer
-            //console.log("wait callback", bytesRead);
+            console.log("wait callback", bytesRead);
 
             // Wait for new data
             const previousValue = this.receiveBuffer.signalPointer[0];

@@ -22,6 +22,9 @@ pub enum Opcode {
     SetWaveformIndex = 30,
     SetDelayLength,
 
+    // Opcodes for frontend
+    SetSequencerStep,
+
     Max
 }
 
@@ -92,7 +95,12 @@ impl VM {
         self.position = 0;
     }
 
-    pub fn push(&mut self, value: u8) {
+    pub fn push_opcode(&mut self, opcode: Opcode) {
+        self.program[self.position] = opcode as u8;
+        self.position += 1;
+    }
+
+    pub fn push_u8(&mut self, value: u8) {
         self.program[self.position] = value;
         self.position += 1;
     }
