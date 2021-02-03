@@ -5,9 +5,9 @@ const DELAY_BUFFER_SIZE: usize = 2 * SAMPLE_RATE as usize;
 pub struct Delay {
     buffer: Vec<f32>,
 
-    send: f32, // 0..1
-    feedback: f32, // 0..1
-    length: usize, // in samples
+    pub send: f32, // 0..1
+    pub feedback: f32, // 0..1
+    pub length: usize, // in samples
 
     position: usize
 }

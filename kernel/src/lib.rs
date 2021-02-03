@@ -1,6 +1,9 @@
 use std::cell::RefCell;
 use std::panic;
 
+#[macro_use]
+mod macros;
+
 mod delay;
 mod distortion;
 mod filters;
@@ -8,12 +11,14 @@ mod kernel;
 mod r303;
 mod sequencer;
 mod vco;
+mod vm;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 thread_local! {
+    // Note: wrapping the RefCell in a Box appears to result in smaller code size
     static KERNEL: Box<RefCell<kernel::Kernel>> = Box::new(RefCell::new(kernel::Kernel::new()));
 }
 
@@ -70,7 +75,7 @@ pub fn get_right_pointer() -> *mut f32 {
 
 #[no_mangle]
 pub fn get_program_pointer() -> *mut u8 {
-    KERNEL.with(|k| k.borrow_mut().program_buffer.as_mut_ptr())
+    KERNEL.with(|k| k.borrow_mut().vm.borrow_mut().get_program_ptr())
 }
 
 #[no_mangle]

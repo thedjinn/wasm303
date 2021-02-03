@@ -1,5 +1,5 @@
 pub struct FoldbackDistortion {
-    shape: f32, // 0..1
+    pub shape: f32, // 0..1
 
     gain: f32,
     effective_threshold: f32

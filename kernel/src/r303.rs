@@ -4,6 +4,10 @@ use crate::filters::{OnePole,BiQuad,TBFilter};
 use crate::kernel::{ANTI_DENORMAL,SAMPLE_RATE};
 use crate::sequencer::Sequencer;
 use crate::vco::VCO;
+use crate::vm::{Instruction, Opcode, VM};
+
+use std::rc::Rc;
+use std::cell::RefCell;
 
 pub struct R303 {
     waveform_index: u32, // 0..1
@@ -12,6 +16,8 @@ pub struct R303 {
     envmod: f32, // 0..1
     pub decay: f32, // in ms
     pub accent: f32, // 0..1
+
+    vm: Rc<RefCell<VM>>,
 
     sequencer: Sequencer,
     vco: VCO,
@@ -38,7 +44,7 @@ pub struct R303 {
 }
 
 impl R303 {
-    pub fn new() -> Self {
+    pub fn new(vm: Rc<RefCell<VM>>) -> Self {
         let mut r303 = R303 {
             waveform_index: 0,
             cutoff: 450.0,
@@ -46,6 +52,8 @@ impl R303 {
             envmod: 0.7,
             decay: 150.0,
             accent: 0.2,
+
+            vm: vm,
 
             delay: Delay::new(),
             sequencer: Sequencer::demo(),
@@ -175,5 +183,26 @@ impl R303 {
         sample = self.delay.render(sample);
 
         return sample;
+    }
+
+    pub fn execute(&mut self, instruction: Instruction) {
+        use Opcode::*;
+
+        match instruction.opcode {
+            SetCutoff => self.set_cutoff(instruction.decode(0)),
+            SetResonance => self.set_resonance(instruction.decode(0)),
+            SetEnvMod => self.set_envmod(instruction.decode(0)),
+            SetDecay => self.decay = instruction.decode(0),
+            SetTempo => self.sequencer.set_tempo(instruction.decode(0)),
+            SetTuning => (), // TODO
+            SetAccent => self.accent = instruction.decode(0),
+            SetDistortionThreshold => self.distortion.set_threshold(instruction.decode(0)),
+            SetDistortionShape => self.distortion.shape = instruction.decode(0),
+            SetDelaySend => self.delay.send = instruction.decode(0),
+            SetDelayFeedback => self.delay.feedback = instruction.decode(0),
+            SetWaveformIndex => self.waveform_index = instruction.decode(0),
+            SetDelayLength => self.delay.length = instruction.decode_u32(0) as usize,
+            _ => ()
+        }
     }
 }

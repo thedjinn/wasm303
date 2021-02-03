@@ -84,6 +84,9 @@ class Engine {
         while (true) {
             const bytesRead = this.receiveBuffer.read(this.programBuffer, this.programBuffer.length);
 
+            // TODO: Process receive buffer
+            //console.log("wait callback", bytesRead);
+
             // Wait for new data
             const previousValue = this.receiveBuffer.signalPointer[0];
             const result = Atomics.waitAsync(this.receiveBuffer.signalPointer, 0, previousValue);
@@ -95,15 +98,11 @@ class Engine {
     }
 
     handleMessage = (event: Event) => {
-        console.log(event);
+        console.log("message from worklet:", event);
     }
 }
 
 const engine = new Engine();
-
-function onmessage(event: Event) {
-    console.log(event);
-}
 
 (async function() {
     await engine.initialize();
