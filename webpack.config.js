@@ -44,20 +44,36 @@ module.exports = {
         rules: [
             {
                 test: /\.(ts|tsx)$/,
+                enforce: "pre",
+                exclude: [/node_modules/],
+                use: [
+                    {
+                        options: {
+                            eslintPath: require.resolve("eslint")
+                        },
+                        loader: require.resolve("eslint-loader"),
+                    }
+                ]
+            },
+            {
+                test: /\.(ts|tsx)$/,
                 loader: "ts-loader",
                 include: [path.resolve(__dirname, "src")],
                 exclude: [/node_modules/]
-            }, {
+            },
+            {
                 test: /.(scss|css)$/,
                 use: [
                     {
                         loader: "style-loader"
-                    }, {
+                    },
+                    {
                         loader: "css-loader",
                         options: {
                             sourceMap: true
                         }
-                    }, {
+                    },
+                    {
                         loader: "sass-loader",
                         options: {
                             sourceMap: true
