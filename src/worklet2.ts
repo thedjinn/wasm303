@@ -8,7 +8,7 @@ interface AudioWorkletProcessor {
     process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean;
 }
 
-declare var AudioWorkletProcessor: {
+declare const AudioWorkletProcessor: {
     prototype: AudioWorkletProcessor;
 
     new (options?: AudioWorkletNodeOptions): AudioWorkletProcessor;
@@ -35,7 +35,7 @@ class Bridge {
         return String.fromCharCode.apply(null, this.buffer.slice(ptr, ptr + len));
     }
 
-    wrap(fn: Function): Function {
+    wrap(fn: (message: string) => void): (ptr: number, len: number) => void {
         return (ptr: number, len: number) => {
             fn(this.getString(ptr, len));
         };
@@ -56,7 +56,7 @@ interface Kernel extends WebAssembly.Instance {
 
         memory: WebAssembly.Memory;
     }
-};
+}
 
 class Processor extends AudioWorkletProcessor {
     wasm: Kernel;

@@ -17,8 +17,8 @@ export default class RingBuffer {
     }
 
     read(buffer: Uint8Array, count: number): number {
-        let readPointer = Atomics.load(this.readPointer, 0);
-        let writePointer = Atomics.load(this.writePointer, 0);
+        const readPointer = Atomics.load(this.readPointer, 0);
+        const writePointer = Atomics.load(this.writePointer, 0);
 
         // Check if there is anything to read
         if (readPointer == writePointer) {
@@ -52,8 +52,8 @@ export default class RingBuffer {
     }
 
     write(buffer: Uint8Array, count: number): number {
-        let readPointer = Atomics.load(this.readPointer, 0);
-        let writePointer = Atomics.load(this.writePointer, 0);
+        const readPointer = Atomics.load(this.readPointer, 0);
+        const writePointer = Atomics.load(this.writePointer, 0);
 
         // Check if there is still capacity left
         if ((writePointer + 1) % this.capacity == readPointer) {

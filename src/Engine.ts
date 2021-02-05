@@ -10,7 +10,7 @@ declare namespace Atomics {
         async: false;
         value: string;
     };
-};
+}
 
 export default class Engine {
     sendBuffer: RingBuffer;
@@ -22,10 +22,7 @@ export default class Engine {
 
     resolveBootstrapPromise: () => void;
 
-    constructor() {
-    }
-
-    async initialize() {
+    async initialize(): Promise<void> {
         // TODO: Load in parallel with worklet
         const response = await fetch("kernel.wasm");
         if (!response.ok) {
@@ -61,7 +58,7 @@ export default class Engine {
 
         this.programBuffer = new Uint8Array(1024);
 
-        let bootstrapPromise = new Promise<void>((resolve, reject) => {
+        const bootstrapPromise = new Promise<void>((resolve, reject) => {
             this.resolveBootstrapPromise = resolve;
         });
 
@@ -78,7 +75,7 @@ export default class Engine {
         await bootstrapPromise;
     }
 
-    toggleStart() {
+    toggleStart(): void {
         if (this.context.state === "running") {
             this.context.suspend();
         } else {
@@ -86,7 +83,7 @@ export default class Engine {
         }
     }
 
-    waitCallback = (result: string) => {
+    waitCallback: (result: string) => void = (result: string) => {
         while (true) {
             const bytesRead = this.receiveBuffer.read(this.programBuffer, this.programBuffer.length);
 
@@ -105,7 +102,7 @@ export default class Engine {
         }
     }
 
-    processInstructions(bytesToProcess: number) {
+    processInstructions(bytesToProcess: number): void {
         for (let i=0; i < bytesToProcess; ++i) {
             console.log(this.programBuffer[i]);
 
@@ -116,7 +113,7 @@ export default class Engine {
         }
     }
 
-    handleMessage = (event: Event) => {
+    handleMessage: (event: Event) => void = (event: Event) => {
         console.log("message from worklet:", event);
     }
 }

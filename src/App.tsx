@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import Engine from "./Engine";
 
 interface Props {
     engine: Engine
-};
+}
 
-export default function({
+export default function App({
     engine
-}: Props) {
+}: Props): JSX.Element {
     const [isInitialized, setIsInitialized] = useState(false);
 
     const handleStart = useCallback(() => {
@@ -32,4 +32,4 @@ export default function({
             <button onClick={handleStart}>Start</button>
         </div>
     );
-};
+}
