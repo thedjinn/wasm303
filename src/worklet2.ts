@@ -1,7 +1,5 @@
 import RingBuffer from "./RingBuffer";
 
-console.log("worklet bootstrapped");
-
 // TypeScript doesn't understand audio worklets, so we'll have to provide type
 // declarations ourselves.
 interface AudioWorkletProcessor {
@@ -79,8 +77,6 @@ class Processor extends AudioWorkletProcessor {
     }
 
     handleMessage = (event: MessageEvent) => {
-        console.log(event.data);
-
         if (event.data.command === "bootstrap") {
             this.bridge = new Bridge();
 
@@ -109,11 +105,14 @@ class Processor extends AudioWorkletProcessor {
                 this.sendBuffer = new RingBuffer(event.data.sendStorage);
                 this.receiveBuffer = new RingBuffer(event.data.receiveStorage);
 
-                // TODO: Send initialization completed message
-                console.log("Kernel initialized");
+                // Send initialization completed message
+                // TODO: Use enum for this
+                this.programBuffer[0] = 255;
+                this.sendBuffer.write(this.programBuffer, 1);
             });
         } else {
             // TODO: Pass message to wasm
+            console.log(event.data);
             this.wasm.exports.handle_message();
         }
     }

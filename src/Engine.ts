@@ -1,7 +1,5 @@
 import RingBuffer from "./RingBuffer";
 
-console.log("bootstrapped");
-
 // TypeScript doesn't understand Atomics.waitAsync, so we'll have to provide
 // the declaration ourselves.
 declare namespace Atomics {
@@ -14,11 +12,15 @@ declare namespace Atomics {
     };
 };
 
-class Engine {
+export default class Engine {
     sendBuffer: RingBuffer;
     receiveBuffer: RingBuffer;
 
     programBuffer: Uint8Array;
+
+    context: AudioContext;
+
+    resolveBootstrapPromise: () => void;
 
     constructor() {
     }
@@ -33,15 +35,15 @@ class Engine {
         const kernel = await response.arrayBuffer();
 
         // Initialize audio context
-        const context = new AudioContext({
+        this.context = new AudioContext({
             sampleRate: 44100,
             latencyHint: "interactive"
         });
 
         // Load and instantiate worklet
-        await context.audioWorklet.addModule("worklet2.js");
+        await this.context.audioWorklet.addModule("worklet2.js");
 
-        const node = new AudioWorkletNode(context, "kernel", {
+        const node = new AudioWorkletNode(this.context, "kernel", {
             numberOfInputs: 0,
             numberOfOutputs: 1,
             outputChannelCount: [2]
@@ -49,7 +51,7 @@ class Engine {
 
         node.port.onmessage = this.handleMessage;
 
-        node.connect(context.destination);
+        node.connect(this.context.destination);
 
         const sendStorage = new SharedArrayBuffer(4096);
         const receiveStorage = new SharedArrayBuffer(4096);
@@ -58,6 +60,10 @@ class Engine {
         this.receiveBuffer = new RingBuffer(receiveStorage);
 
         this.programBuffer = new Uint8Array(1024);
+
+        let bootstrapPromise = new Promise<void>((resolve, reject) => {
+            this.resolveBootstrapPromise = resolve;
+        });
 
         // Send kernel to worklet
         node.port.postMessage({
@@ -69,23 +75,25 @@ class Engine {
 
         this.waitCallback("initialize");
 
-        console.log("Audio graph initialized");
+        await bootstrapPromise;
+    }
 
-        document.getElementById("start").addEventListener("click", event => {
-            if (context.state === "running") {
-                context.suspend();
-            } else {
-                context.resume();
-            }
-        });
+    toggleStart() {
+        if (this.context.state === "running") {
+            this.context.suspend();
+        } else {
+            this.context.resume();
+        }
     }
 
     waitCallback = (result: string) => {
         while (true) {
             const bytesRead = this.receiveBuffer.read(this.programBuffer, this.programBuffer.length);
 
-            // TODO: Process receive buffer
-            console.log("wait callback", bytesRead);
+            // Process receive buffer
+            if (bytesRead > 0) {
+                this.processInstructions(bytesRead);
+            }
 
             // Wait for new data
             const previousValue = this.receiveBuffer.signalPointer[0];
@@ -97,15 +105,18 @@ class Engine {
         }
     }
 
+    processInstructions(bytesToProcess: number) {
+        for (let i=0; i < bytesToProcess; ++i) {
+            console.log(this.programBuffer[i]);
+
+            // TODO: Use enum for this
+            if (this.programBuffer[i] === 255) {
+                this.resolveBootstrapPromise();
+            }
+        }
+    }
+
     handleMessage = (event: Event) => {
         console.log("message from worklet:", event);
     }
 }
-
-const engine = new Engine();
-
-(async function() {
-    await engine.initialize();
-})();
-
-export default 0;
