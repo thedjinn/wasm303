@@ -24,15 +24,15 @@ impl Kernel {
     pub fn new() -> Self {
         let vm = Rc::new(RefCell::new(VM::new()));
 
-        return Kernel {
+        Kernel {
             current_sample: 0,
 
             left_buffer: vec![0.0; BUFFER_SIZE],
             right_buffer: vec![0.0; BUFFER_SIZE],
 
             r303: R303::new(Rc::clone(&vm)),
-            vm: vm
-        };
+            vm
+        }
     }
 
     pub fn initialize(&mut self) {

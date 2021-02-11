@@ -6,6 +6,7 @@ const WAVEFORM_SIZE: usize = 4096;
 const WAVEFORM_GROUP_SIZE: usize = 128 * WAVEFORM_SIZE;
 const WAVETABLE_SIZE: usize = 2 * WAVEFORM_GROUP_SIZE;
 
+#[allow(clippy::float_cmp, clippy::needless_range_loop)]
 fn make_wavetable() -> Vec<f32> {
     // create sine table to speed up initialization
     let mut sine_table: Vec<f32> = vec![0.0; WAVEFORM_SIZE];
@@ -14,7 +15,7 @@ fn make_wavetable() -> Vec<f32> {
     }
 
     // create wavetable
-    let mut wavetable = vec![0.0 as f32; WAVETABLE_SIZE];
+    let mut wavetable = vec![0.0_f32; WAVETABLE_SIZE];
 
     // create a waveform for each midi note
     let mut last: f32 = 0.0;
@@ -87,9 +88,10 @@ fn make_wavetable() -> Vec<f32> {
         wavetable[WAVEFORM_GROUP_SIZE + i] *= max1;
     }
 
-    return wavetable;
+    wavetable
 }
 
+#[allow(clippy::float_cmp, clippy::needless_range_loop)]
 fn make_wavetable_orig() -> Vec<f32> {
     // create sine table to speed up initialization
     let mut sine_table: Vec<f32> = vec![0.0; WAVEFORM_SIZE];
@@ -98,7 +100,7 @@ fn make_wavetable_orig() -> Vec<f32> {
     }
 
     // create wavetable
-    let mut wavetable = vec![0.0 as f32; WAVETABLE_SIZE];
+    let mut wavetable = vec![0.0_f32; WAVETABLE_SIZE];
 
     // create a waveform for each midi note
     let mut last: f32 = 0.0;
@@ -149,7 +151,7 @@ fn make_wavetable_orig() -> Vec<f32> {
         wavetable[WAVEFORM_GROUP_SIZE + i] *= max1;
     }
 
-    return wavetable;
+    wavetable
 }
 
 #[cfg(test)]
@@ -224,7 +226,7 @@ impl VCO {
             self.position -= WAVEFORM_SIZE as f32;
         }
 
-        return sample;
+        sample
     }
 
     // Note: to be called every 64 samples

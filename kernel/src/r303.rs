@@ -53,7 +53,7 @@ impl R303 {
             decay: 150.0,
             accent: 0.2,
 
-            vm: vm,
+            vm,
 
             delay: Delay::new(),
             sequencer: Sequencer::demo(),
@@ -84,7 +84,7 @@ impl R303 {
 
         r303.update_envmod_coefficients();
 
-        return r303;
+        r303
     }
 
     fn set_waveform_index(&mut self, waveform_index: u32) {
@@ -107,6 +107,7 @@ impl R303 {
         self.update_envmod_coefficients();
     }
 
+    #[allow(clippy::excessive_precision)]
     fn update_envmod_coefficients(&mut self) {
         let c0 = 3.138152786059267e+2;
         let c1 = 2.394411986817546e+3;
@@ -187,7 +188,7 @@ impl R303 {
         // Delay
         sample = self.delay.render(sample);
 
-        return sample;
+        sample
     }
 
     pub fn execute(&mut self, instruction: Instruction) {

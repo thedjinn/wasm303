@@ -27,9 +27,9 @@ impl FoldbackDistortion {
             let a = (1.0 - self.shape) * clipped + self.shape * sample;
 
             // wrap around
-            return (((a - self.effective_threshold) % (self.effective_threshold * 4.0).abs() - self.effective_threshold * 2.0).abs() - self.effective_threshold) * self.gain;
+            (((a - self.effective_threshold) % (self.effective_threshold * 4.0).abs() - self.effective_threshold * 2.0).abs() - self.effective_threshold) * self.gain
         } else {
-            return sample * self.gain;
+            sample * self.gain
         }
     }
 }

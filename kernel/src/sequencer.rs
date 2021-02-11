@@ -26,7 +26,7 @@ pub struct Sequencer {
 
 impl Sequencer {
     pub fn new() -> Self {
-        return Sequencer {
+        Sequencer {
             is_running: true,
             sample_position: 10000000,
             step_length: (SAMPLE_RATE / 8.0) as u32, // 120 bpm
@@ -62,7 +62,7 @@ impl Sequencer {
             ]
         });
 
-        return sequencer;
+        sequencer
     }
 
     pub fn set_tempo(&mut self, tempo: f32) {

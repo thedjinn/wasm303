@@ -18,7 +18,7 @@ impl LeakyIntegrator {
 
     pub fn render(&mut self, sample: f32) -> f32 {
         self.y1 = sample + (self.y1 - sample) * self.coefficient + ANTI_DENORMAL;
-        return self.y1;
+        self.y1
     }
 }
 
@@ -38,33 +38,33 @@ impl OnePole {
     pub fn high_pass(cutoff: f32) -> Self {
         let alpha = (-2.0 * PI * cutoff * (1.0 / SAMPLE_RATE)).exp();
 
-        return OnePole {
+        OnePole {
             x1: 0.0,
             y1: 0.0,
             b0: 0.5 * (1.0 + alpha),
             b1: -0.5 * (1.0 + alpha),
             a1: alpha
-        };
+        }
     }
 
     pub fn all_pass(cutoff: f32) -> Self {
         let tau = (PI * cutoff * (1.0 / SAMPLE_RATE)).tan();
         let alpha = (1.0 - tau) / (1.0 + tau);
 
-        return OnePole {
+        OnePole {
             x1: 0.0,
             y1: 0.0,
             b0: alpha,
             b1: 1.0,
             a1: -alpha
-        };
+        }
     }
 
     pub fn render(&mut self, x0: f32) -> f32 {
         self.y1 = self.b0 * x0 + self.b1 * self.x1 + self.a1 * self.y1 + ANTI_DENORMAL;
         self.x1 = x0;
 
-        return self.y1;
+        self.y1
     }
 }
 
@@ -92,17 +92,17 @@ impl BiQuad {
         let b1 = (1.0 - c) * scale;
         let b0 = 0.5 * b1;
 
-        return BiQuad {
+        BiQuad {
             x1: 0.0,
             x2: 0.0,
             y1: 0.0,
             y2: 0.0,
             a1: 2.0 * c * scale,
             a2: (alpha - 1.0) * scale,
-            b1: b1,
-            b0: b0,
+            b1,
+            b0,
             b2: b0
-        };
+        }
     }
 
     pub fn notch(frequency: f32, bandwidth: f32) -> Self {
@@ -112,7 +112,7 @@ impl BiQuad {
         let alpha = s * (0.5 * 2.0_f32.ln() * bandwidth * omega / s).sinh();
         let scale = 1.0 / (1.0 + alpha);
 
-        return BiQuad {
+        BiQuad {
             x1: 0.0,
             x2: 0.0,
             y1: 0.0,
@@ -133,7 +133,7 @@ impl BiQuad {
         self.y2 = self.y1;
         self.y1 = y1;
 
-        return y1;
+        y1
     }
 }
 
@@ -155,7 +155,7 @@ pub struct TBFilter {
 
 impl TBFilter {
     pub fn new() -> Self {
-        return TBFilter {
+        TBFilter {
             y0: 0.0,
             y1: 0.0,
             y2: 0.0,
@@ -166,13 +166,14 @@ impl TBFilter {
             k: 0.0,
             resonance_skewed: 0.0,
             feedback_highpass: OnePole::high_pass(150.0)
-        };
+        }
     }
 
     pub fn set_resonance(&mut self, resonance: f32) {
         self.resonance_skewed = (1.0 - (-3.0 * resonance).exp()) / (1.0 - (-3.0_f32).exp());
     }
 
+    #[allow(clippy::excessive_precision)]
     pub fn update_coefficients(&mut self, cutoff: f32) {
         // Recalculate main filter coefficients
         // TODO: optimize into lookup table
@@ -194,6 +195,6 @@ impl TBFilter {
         self.y3 +=       self.b0 * (self.y2 - 2.0 * self.y3 + self.y4);
         self.y4 +=       self.b0 * (self.y3 - 2.0 * self.y4);
 
-        return 2.0 * self.g * self.y4;
+        2.0 * self.g * self.y4
     }
 }

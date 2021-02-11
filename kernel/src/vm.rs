@@ -109,6 +109,12 @@ impl VM {
     }
 }
 
+impl Default for VM {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<'a> IntoIterator for &'a VM {
     type Item = <Self::IntoIter as Iterator>::Item;
     type IntoIter = ProgramIterator<'a>;
@@ -173,7 +179,7 @@ impl<'a> Iterator for ProgramIterator<'a> {
 
         Some(Instruction {
             operands: &self.program[self.position..self.position + operand_size],
-            opcode: opcode
+            opcode
         })
     }
 }

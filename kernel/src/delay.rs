@@ -34,6 +34,6 @@ impl Delay {
             self.position = 0;
         }
 
-        return sample + previous;
+        sample + previous
     }
 }
