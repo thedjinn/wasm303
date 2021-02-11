@@ -11,6 +11,9 @@ crate-type = ["cdylib", "rlib"]
 [features]
 default = ["wee_alloc"]
 
+[dependencies.enumtojs]
+path = "enumtojs"
+
 [dependencies]
 wee_alloc = { version = "0.4.5", optional = true }
 

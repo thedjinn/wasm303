@@ -4,7 +4,7 @@ set -e
 
 #RUSTFLAGS="-C link-args=-c stack-size=1500000"
 
-cargo build --target wasm32-unknown-unknown --release
+cargo build --target wasm32-unknown-unknown --release --lib
 ls -la target/wasm32-unknown-unknown/release/kernel.wasm
 
 #wasm-strip target/wasm32-unknown-unknown/release/kernel.wasm

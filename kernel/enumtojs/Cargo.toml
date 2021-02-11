@@ -1,0 +1,12 @@
+[package]
+name = "enumtojs"
+version = "1.0.0"
+authors = ["Emil Loer <emil@koffietijd.net>"]
+edition = "2018"
+license = "GPLv3"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "1.0.60", features = ["full"] }
