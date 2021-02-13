@@ -1,10 +1,10 @@
 export default class RingBuffer {
-    sharedArrayBuffer: SharedArrayBuffer;
-    capacity: number;
-    readPointer: Uint32Array;
-    writePointer: Uint32Array;
+    private sharedArrayBuffer: SharedArrayBuffer;
+    private capacity: number;
+    private readPointer: Uint32Array;
+    private writePointer: Uint32Array;
     signalPointer: Int32Array;
-    storage: Uint8Array;
+    private storage: Uint8Array;
 
     constructor(sharedArrayBuffer: SharedArrayBuffer) {
         this.sharedArrayBuffer = sharedArrayBuffer;

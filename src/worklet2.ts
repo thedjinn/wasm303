@@ -1,3 +1,4 @@
+import Opcode from "./Opcode";
 import RingBuffer from "./RingBuffer";
 
 // TypeScript doesn't understand audio worklets, so we'll have to provide type
@@ -17,15 +18,15 @@ declare const AudioWorkletProcessor: {
 declare function registerProcessor(name: string, processorCtor: (new (options?: AudioWorkletNodeOptions) => AudioWorkletProcessor) & { parameterDescriptors?: AudioParamDescriptor[]; }): undefined;
 
 class Bridge {
-    wasm: WebAssembly.Instance;
-    buffer: Uint8Array;
+    private wasm: WebAssembly.Instance;
+    private buffer: Uint8Array;
 
     bootstrap(wasm: WebAssembly.Instance) {
         this.wasm = wasm;
         this.buffer = new Uint8Array((wasm.exports.memory as WebAssembly.Memory).buffer);
     }
 
-    getString(ptr: number, len: number): string {
+    private getString(ptr: number, len: number): string {
         // Get a fresh Uint8Array if the wasm memory buffer was moved
         const buffer = (this.wasm.exports.memory as WebAssembly.Memory).buffer;
         if (this.buffer !== buffer) {
@@ -59,16 +60,16 @@ interface Kernel extends WebAssembly.Instance {
 }
 
 class Processor extends AudioWorkletProcessor {
-    wasm: Kernel;
-    bridge: Bridge;
+    private wasm: Kernel;
+    private bridge: Bridge;
 
-    sendBuffer: RingBuffer;
-    receiveBuffer: RingBuffer;
+    private sendBuffer: RingBuffer;
+    private receiveBuffer: RingBuffer;
 
-    leftBuffer: Float32Array;
-    rightBuffer: Float32Array;
+    private leftBuffer: Float32Array;
+    private rightBuffer: Float32Array;
 
-    programBuffer: Uint8Array;
+    private programBuffer: Uint8Array;
 
     constructor(options?: AudioWorkletNodeOptions) {
         super(options);
@@ -76,7 +77,7 @@ class Processor extends AudioWorkletProcessor {
         this.port.onmessage = this.handleMessage;
     }
 
-    handleMessage = (event: MessageEvent) => {
+    private handleMessage = (event: MessageEvent) => {
         if (event.data.command === "bootstrap") {
             this.bridge = new Bridge();
 
@@ -106,8 +107,7 @@ class Processor extends AudioWorkletProcessor {
                 this.receiveBuffer = new RingBuffer(event.data.receiveStorage);
 
                 // Send initialization completed message
-                // TODO: Use enum for this
-                this.programBuffer[0] = 255;
+                this.programBuffer[0] = Opcode.BootstrapFinished;
                 this.sendBuffer.write(this.programBuffer, 1);
             });
         } else {

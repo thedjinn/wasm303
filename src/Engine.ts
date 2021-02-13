@@ -14,14 +14,15 @@ declare namespace Atomics {
 }
 
 export default class Engine {
-    sendBuffer: RingBuffer;
-    receiveBuffer: RingBuffer;
+    private sendBuffer: RingBuffer;
+    private receiveBuffer: RingBuffer;
 
-    programBuffer: Uint8Array;
+    private programBuffer: Uint8Array;
+    private programDataView: DataView;
 
-    context: AudioContext;
+    private context: AudioContext;
 
-    resolveBootstrapPromise: () => void;
+    private resolveBootstrapPromise: () => void;
 
     async initialize(): Promise<void> {
         // TODO: Load in parallel with worklet
@@ -58,6 +59,7 @@ export default class Engine {
         this.receiveBuffer = new RingBuffer(receiveStorage);
 
         this.programBuffer = new Uint8Array(1024);
+        this.programDataView = new DataView(this.programBuffer.buffer);
 
         const bootstrapPromise = new Promise<void>((resolve, reject) => {
             this.resolveBootstrapPromise = resolve;
@@ -84,7 +86,7 @@ export default class Engine {
         }
     }
 
-    waitCallback: (result: string) => void = (result: string) => {
+    private waitCallback: (result: string) => void = (result: string) => {
         while (true) {
             const bytesRead = this.receiveBuffer.read(this.programBuffer, this.programBuffer.length);
 
@@ -103,18 +105,40 @@ export default class Engine {
         }
     }
 
-    processInstructions(bytesToProcess: number): void {
-        for (let i=0; i < bytesToProcess; ++i) {
-            console.log(this.programBuffer[i]);
+    private *decodeInstructions(bytesToProcess: number): Generator<number[]> {
+        const instruction = [];
 
-            // TODO: Use enum for this
-            if (this.programBuffer[i] === 255) {
-                this.resolveBootstrapPromise();
+        let ptr = 0;
+        while (ptr < bytesToProcess) {
+            const opcode = this.programBuffer[ptr++];
+            instruction.push(opcode);
+
+            // Extract operands
+            if (opcode >= 80 && opcode < 100) {
+                instruction.push(this.programDataView.getInt32(ptr, true));
+                ptr += 4;
+            } else if (opcode >= 100 && opcode < 120) {
+                instruction.push(this.programDataView.getFloat32(ptr, true));
+                ptr += 4;
             }
+
+            yield instruction;
+
+            instruction.length = 0;
         }
     }
 
-    handleMessage: (event: Event) => void = (event: Event) => {
+    private processInstructions(bytesToProcess: number): void {
+        for (const instruction of this.decodeInstructions(bytesToProcess)) {
+            if (instruction[0] === Opcode.BootstrapFinished) {
+                this.resolveBootstrapPromise();
+            }
+
+            console.log(instruction);
+        }
+    }
+
+    private handleMessage: (event: Event) => void = (event: Event) => {
         console.log("message from worklet:", event);
     }
 }

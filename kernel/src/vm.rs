@@ -6,10 +6,11 @@ use enumtojs::enum_to_js;
 #[enum_to_js(filename="../src/Opcode.ts")]
 #[derive(Clone, Copy)]
 pub enum Opcode {
+    // No operands
     Nop = 0,
 
     // Single f32 operand
-    SetCutoff = 10,
+    SetCutoff = 20,
     SetResonance,
     SetEnvMod,
     SetDecay,
@@ -22,12 +23,19 @@ pub enum Opcode {
     SetDelayFeedback,
 
     // Single u32 operand
-    SetWaveformIndex = 30,
+    SetWaveformIndex = 40,
     SetDelayLength,
 
-    // Opcodes for frontend
-    SetSequencerStep,
+    // Opcodes for frontend, no operands
+    BootstrapFinished = 60,
 
+    // Opcodes for frontend, single f32 operand
+    SetSequencerStep = 80,
+
+    // Opcodes for frontend, single u32 operand
+    // ...
+
+    // Sentinel
     Max
 }
 
@@ -42,8 +50,8 @@ impl Opcode {
 
     fn operand_size(&self) -> usize {
         match *self as u8 {
-            10..=29 => 4,
-            30..=49 => 4,
+            20..=39 => 4,
+            40..=59 => 4,
             _ => 0
         }
     }
