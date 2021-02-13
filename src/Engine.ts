@@ -13,6 +13,48 @@ declare namespace Atomics {
     };
 }
 
+export type OpcodeWithoutOperand =
+    typeof Opcode.Nop |
+    typeof Opcode.BootstrapFinished;
+
+export type OpcodeWithU32 =
+    typeof Opcode.SetSequencerStep;
+
+export type OpcodeWithF32 =
+    typeof Opcode.Max; // FIXME: This is a placeholder
+
+export type Opcode =
+    OpcodeWithoutOperand |
+    OpcodeWithU32 |
+    OpcodeWithF32;
+
+export const isOpcodeWithU32 = (x: Opcode): x is OpcodeWithU32 => x >= 80 && x < 100;
+export const isOpcodeWithF32 = (x: Opcode): x is OpcodeWithF32 => x >= 100 && x < 120;
+
+interface InstructionWithoutOperand {
+    opcode: OpcodeWithoutOperand
+}
+
+interface InstructionWithU32 {
+    opcode: OpcodeWithU32,
+    operand: number
+}
+
+interface InstructionWithF32 {
+    opcode: OpcodeWithF32,
+    operand: number
+}
+
+export type Instruction =
+    InstructionWithoutOperand |
+    InstructionWithU32 |
+    InstructionWithF32;
+
+const isInstructionWithU32 = (x: Instruction): x is InstructionWithU32 => isOpcodeWithU32(x.opcode);
+const isInstructionWithF32 = (x: Instruction): x is InstructionWithF32 => isOpcodeWithF32(x.opcode);
+
+export type InstructionCallback = (instruction: Instruction) => void;
+
 export default class Engine {
     private sendBuffer: RingBuffer;
     private receiveBuffer: RingBuffer;
@@ -24,7 +66,11 @@ export default class Engine {
 
     private resolveBootstrapPromise: () => void;
 
-    async initialize(): Promise<void> {
+    private instructionCallback: InstructionCallback;
+
+    async initialize(instructionCallback: InstructionCallback): Promise<void> {
+        this.instructionCallback = instructionCallback;
+
         // TODO: Load in parallel with worklet
         const response = await fetch("kernel.wasm");
         if (!response.ok) {
@@ -105,36 +151,40 @@ export default class Engine {
         }
     }
 
-    private *decodeInstructions(bytesToProcess: number): Generator<number[]> {
-        const instruction = [];
-
+    private *decodeInstructions(bytesToProcess: number): Generator<Instruction> {
         let ptr = 0;
+
         while (ptr < bytesToProcess) {
-            const opcode = this.programBuffer[ptr++];
-            instruction.push(opcode);
+            const opcode = this.programBuffer[ptr++] as Opcode;
 
             // Extract operands
-            if (opcode >= 80 && opcode < 100) {
-                instruction.push(this.programDataView.getInt32(ptr, true));
+            if (isOpcodeWithU32(opcode)) {
+                yield {
+                    opcode,
+                    operand: this.programDataView.getInt32(ptr, true)
+                };
+
                 ptr += 4;
-            } else if (opcode >= 100 && opcode < 120) {
-                instruction.push(this.programDataView.getFloat32(ptr, true));
+            } else if (isOpcodeWithF32(opcode)) {
+                yield {
+                    opcode,
+                    operand: this.programDataView.getFloat32(ptr, true)
+                };
+
                 ptr += 4;
+            } else {
+                yield { opcode };
             }
-
-            yield instruction;
-
-            instruction.length = 0;
         }
     }
 
     private processInstructions(bytesToProcess: number): void {
         for (const instruction of this.decodeInstructions(bytesToProcess)) {
-            if (instruction[0] === Opcode.BootstrapFinished) {
+            if (instruction.opcode === Opcode.BootstrapFinished) {
                 this.resolveBootstrapPromise();
+            } else {
+                this.instructionCallback(instruction);
             }
-
-            console.log(instruction);
         }
     }
 

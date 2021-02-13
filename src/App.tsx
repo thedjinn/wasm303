@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import Engine from "./Engine";
+import Engine, { Instruction } from "./Engine";
 
 interface Props {
     engine: Engine
@@ -15,13 +15,18 @@ export default function App({
         engine.toggleStart();
     }, [engine]);
 
+    const handleInstruction = useCallback((instruction: Instruction) => {
+        console.log(instruction);
+        //console.log(instruction.operand);
+    }, []);
+
     useEffect(() => {
-        engine.initialize().then(() => {
+        engine.initialize(handleInstruction).then(() => {
             setIsInitialized(true);
         }).catch(err => {
             console.error(err);
         });
-    }, [engine]);
+    }, [engine, handleInstruction]);
 
     return (
         <div>

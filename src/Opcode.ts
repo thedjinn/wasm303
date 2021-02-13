@@ -1,4 +1,4 @@
-const Opcode: {[identifier: string]: number} = {
+const Opcode = {
     Nop: 0,
     SetCutoff: 20,
     SetResonance: 21,
@@ -16,6 +16,6 @@ const Opcode: {[identifier: string]: number} = {
     BootstrapFinished: 60,
     SetSequencerStep: 80,
     Max: 81
-};
+} as const;
 
 export default Opcode;
