@@ -69,7 +69,7 @@ pub fn enum_to_js(args: TokenStream, input: TokenStream) -> TokenStream {
     // Build output string
     let mut output = String::with_capacity(16384);
 
-    output.push_str(&format!("export const {}: [str: number] = {{\n", ast.ident));
+    output.push_str(&format!("const {}: {{[identifier: string]: number}} = {{\n", ast.ident));
 
     let mut discriminant = 0;
 
@@ -84,7 +84,7 @@ pub fn enum_to_js(args: TokenStream, input: TokenStream) -> TokenStream {
     }).collect::<Vec<String>>().join(",\n");
 
     output.push_str(&lines);
-    output.push_str("\n};\n");
+    output.push_str(&format!("\n}};\n\nexport default {};\n", ast.ident));
 
     // Write file to disk
     let path = Path::new(&arguments.filename);

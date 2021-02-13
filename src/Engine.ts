@@ -1,3 +1,4 @@
+import Opcode from "./Opcode";
 import RingBuffer from "./RingBuffer";
 
 // TypeScript doesn't understand Atomics.waitAsync, so we'll have to provide
