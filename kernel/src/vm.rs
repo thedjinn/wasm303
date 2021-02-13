@@ -3,7 +3,7 @@ const MAX_PROGRAM_SIZE: usize = 1024;
 use enumtojs::enum_to_js;
 
 #[repr(u8)]
-#[enum_to_js]
+#[enum_to_js(filename="test.ts")]
 #[derive(Clone, Copy)]
 pub enum Opcode {
     Nop = 0,
