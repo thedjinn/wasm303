@@ -16,10 +16,20 @@ export default function App({
     const [isInitialized, setIsInitialized] = useState(false);
 
     const [sequencerStep, setSequencerStep] = useState(0);
+    const [waveformIndex, setWaveformIndex] = useState(0);
 
     const handleStart = useCallback(() => {
         engine.toggleStart();
     }, [engine]);
+
+    const handleToggleWaveform = useCallback(() => {
+        engine.sendInstruction({
+            opcode: Opcode.SetWaveformIndex,
+            operand: 1 - waveformIndex
+        });
+
+        setWaveformIndex(1 - waveformIndex);
+    }, [engine, waveformIndex]);
 
     const handleInstruction = useCallback((instruction: Instruction) => {
         switch (instruction.opcode) {
@@ -53,6 +63,7 @@ export default function App({
             <p>{sequencerStep}</p>
 
             <button onClick={handleStart}>Start</button>
+            <button onClick={handleToggleWaveform}>Toggle waveform</button>
         </div>
     );
 }

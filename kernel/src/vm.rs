@@ -9,8 +9,12 @@ pub enum Opcode {
     // No operands
     Nop = 0,
 
+    // Single u32 operand
+    SetWaveformIndex = 20,
+    SetDelayLength,
+
     // Single f32 operand
-    SetCutoff = 20,
+    SetCutoff = 40,
     SetResonance,
     SetEnvMod,
     SetDecay,
@@ -22,17 +26,13 @@ pub enum Opcode {
     SetDelaySend,
     SetDelayFeedback,
 
-    // Single u32 operand
-    SetWaveformIndex = 40,
-    SetDelayLength,
-
     // Opcodes for frontend, no operands
     BootstrapFinished = 60,
 
-    // Opcodes for frontend, single f32 operand
+    // Opcodes for frontend, single u32 operand
     SetSequencerStep = 80,
 
-    // Opcodes for frontend, single u32 operand
+    // Opcodes for frontend, single f32 operand
     // ...
 
     // Sentinel

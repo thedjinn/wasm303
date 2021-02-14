@@ -18,6 +18,7 @@ export type OpcodeWithoutOperand =
     typeof Opcode.BootstrapFinished;
 
 export type OpcodeWithU32 =
+    typeof Opcode.SetWaveformIndex |
     typeof Opcode.SetSequencerStep;
 
 export type OpcodeWithF32 =
@@ -28,8 +29,8 @@ export type Opcode =
     OpcodeWithU32 |
     OpcodeWithF32;
 
-export const isOpcodeWithU32 = (x: Opcode): x is OpcodeWithU32 => x >= 80 && x < 100;
-export const isOpcodeWithF32 = (x: Opcode): x is OpcodeWithF32 => x >= 100 && x < 120;
+export const isOpcodeWithU32 = (x: Opcode): x is OpcodeWithU32 => (x >= 20 && x < 40) || (x >= 80 && x < 100);
+export const isOpcodeWithF32 = (x: Opcode): x is OpcodeWithF32 => (x >= 40 && x < 60) || (x >= 100 && x < 120);
 
 export interface InstructionWithoutOperand {
     opcode: OpcodeWithoutOperand
