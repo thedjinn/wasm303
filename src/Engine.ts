@@ -31,16 +31,16 @@ export type Opcode =
 export const isOpcodeWithU32 = (x: Opcode): x is OpcodeWithU32 => x >= 80 && x < 100;
 export const isOpcodeWithF32 = (x: Opcode): x is OpcodeWithF32 => x >= 100 && x < 120;
 
-interface InstructionWithoutOperand {
+export interface InstructionWithoutOperand {
     opcode: OpcodeWithoutOperand
 }
 
-interface InstructionWithU32 {
+export interface InstructionWithU32 {
     opcode: OpcodeWithU32,
     operand: number
 }
 
-interface InstructionWithF32 {
+export interface InstructionWithF32 {
     opcode: OpcodeWithF32,
     operand: number
 }
@@ -61,6 +61,9 @@ export default class Engine {
 
     private programBuffer: Uint8Array;
     private programDataView: DataView;
+
+    private encodeBuffer: Uint8Array;
+    private encodeDataView: DataView;
 
     private context: AudioContext;
 
@@ -107,6 +110,9 @@ export default class Engine {
         this.programBuffer = new Uint8Array(1024);
         this.programDataView = new DataView(this.programBuffer.buffer);
 
+        this.encodeBuffer = new Uint8Array(1024);
+        this.encodeDataView = new DataView(this.encodeBuffer.buffer);
+
         const bootstrapPromise = new Promise<void>((resolve, reject) => {
             this.resolveBootstrapPromise = resolve;
         });
@@ -130,6 +136,21 @@ export default class Engine {
         } else {
             this.context.resume();
         }
+    }
+
+    sendInstruction(instruction: Instruction): void {
+        let ptr = 0;
+        this.encodeBuffer[ptr++] = instruction.opcode;
+
+        if (isInstructionWithU32(instruction)) {
+            this.encodeDataView.setUint32(ptr, instruction.operand, true);
+            ptr += 4;
+        } else if (isInstructionWithF32(instruction)) {
+            this.encodeDataView.setFloat32(ptr, instruction.operand, true);
+            ptr += 4;
+        }
+
+        this.sendBuffer.write(this.encodeBuffer, ptr);
     }
 
     private waitCallback: (result: string) => void = (result: string) => {
