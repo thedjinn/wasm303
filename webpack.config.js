@@ -32,12 +32,14 @@ module.exports = {
 
     plugins: [
         new webpack.ProgressPlugin(),
-        new CopyWebpackPlugin([
-            {
-                from: "public",
-                to: ""
-            }
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: "public",
+                    to: ""
+                }
+            ]
+        })
     ],
 
     module: {
