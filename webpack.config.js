@@ -15,6 +15,7 @@ const webpack = require("webpack");
  */
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const ESLintPlugin = require("eslint-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
@@ -32,6 +33,7 @@ module.exports = {
 
     plugins: [
         new webpack.ProgressPlugin(),
+        new ESLintPlugin({}),
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -44,19 +46,6 @@ module.exports = {
 
     module: {
         rules: [
-            {
-                test: /\.(ts|tsx)$/,
-                enforce: "pre",
-                exclude: [/node_modules/],
-                use: [
-                    {
-                        options: {
-                            eslintPath: require.resolve("eslint")
-                        },
-                        loader: require.resolve("eslint-loader"),
-                    }
-                ]
-            },
             {
                 test: /\.(ts|tsx)$/,
                 loader: "ts-loader",
