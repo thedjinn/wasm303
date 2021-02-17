@@ -1,21 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 
 import App from "./App";
-import Engine from "./Engine";
-import rootReducer from "./reducers";
-
-const engine = new Engine();
-
-const store = configureStore({
-    reducer: rootReducer
-});
+import store from "./store";
 
 ReactDOM.render(
     <Provider store={store}>
-        <App engine={engine} />
+        <App />
     </Provider>,
     document.getElementById("root")
 );

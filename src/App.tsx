@@ -1,58 +1,33 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import Engine, {
-    Instruction
-} from "./Engine";
+import { RootState } from "./reducers";
 
-import Opcode from "./Opcode";
+import {
+    bootstrap,
+    setWaveformIndex,
+    start
+} from "./reducers/r303";
 
-interface Props {
-    engine: Engine
-}
+export default function App(): JSX.Element {
+    const dispatch = useDispatch();
 
-export default function App({
-    engine
-}: Props): JSX.Element {
-    const [isInitialized, setIsInitialized] = useState(false);
+    const isInitialized = useSelector((state: RootState) => state.r303.isInitialized);
+    const sequencerStep = useSelector((state: RootState) => state.r303.sequencerStep);
 
-    const [sequencerStep, setSequencerStep] = useState(0);
-    const [waveformIndex, setWaveformIndex] = useState(0);
+    const waveformIndex = useSelector((state: RootState) => state.r303.waveformIndex);
 
     const handleStart = useCallback(() => {
-        engine.toggleStart();
-    }, [engine]);
+        dispatch(start());
+    }, [dispatch]);
 
     const handleToggleWaveform = useCallback(() => {
-        engine.sendInstruction({
-            opcode: Opcode.SetWaveformIndex,
-            operand: 1 - waveformIndex
-        });
-
-        setWaveformIndex(1 - waveformIndex);
-    }, [engine, waveformIndex]);
-
-    const handleInstruction = useCallback((instruction: Instruction) => {
-        switch (instruction.opcode) {
-            case Opcode.Nop:
-                break;
-            case Opcode.BootstrapFinished:
-                break;
-            case Opcode.SetSequencerStep:
-                console.log("set sequencer step", instruction.operand);
-                setSequencerStep(instruction.operand);
-                break;
-            case Opcode.Max:
-                break;
-        }
-    }, []);
+        dispatch(setWaveformIndex(1 - waveformIndex));
+    }, [dispatch, waveformIndex]);
 
     useEffect(() => {
-        engine.initialize(handleInstruction).then(() => {
-            setIsInitialized(true);
-        }).catch(err => {
-            console.error(err);
-        });
-    }, [engine, handleInstruction]);
+        dispatch(bootstrap());
+    }, [dispatch]);
 
     return (
         <div>
