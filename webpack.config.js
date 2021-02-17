@@ -33,7 +33,9 @@ module.exports = {
 
     plugins: [
         new webpack.ProgressPlugin(),
-        new ESLintPlugin({}),
+        new ESLintPlugin({
+            extensions: ["ts", "tsx", "js", "jsx"]
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 {
