@@ -206,7 +206,7 @@ impl R303 {
             SetDistortionShape => self.distortion.shape = instruction.decode(0),
             SetDelaySend => self.delay.send = instruction.decode(0),
             SetDelayFeedback => self.delay.feedback = instruction.decode(0),
-            SetWaveformIndex => self.waveform_index = instruction.decode(0),
+            SetWaveformIndex => self.set_waveform_index(instruction.decode(0)),
             SetDelayLength => self.delay.length = instruction.decode_u32(0) as usize,
             _ => ()
         }
