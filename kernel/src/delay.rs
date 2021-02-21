@@ -17,7 +17,7 @@ impl Delay {
         Self {
             buffer: vec![0.0; DELAY_BUFFER_SIZE],
 
-            send: 0.5,
+            send: 0.2,
             feedback: 0.5,
             length: 20000,
 

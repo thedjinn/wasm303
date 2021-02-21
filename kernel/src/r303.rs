@@ -48,7 +48,7 @@ impl R303 {
         let mut r303 = R303 {
             waveform_index: 0,
             cutoff: 450.0,
-            resonance: 0.9,
+            resonance: 0.2,
             envmod: 0.7,
             decay: 150.0,
             accent: 0.2,
