@@ -1,9 +1,134 @@
 @import "reset.scss";
 
+@function longshadow($color_a, $color_b, $stepnum, $opacity: 1){
+    $gradient_steps: null;
+
+    @for $i from 1 through $stepnum {
+        $weight: (($i - 1) / $stepnum) * 100;
+        $colour_mix: mix($color_b, rgba($color_a, $opacity), $weight);
+        $seperator: null;
+
+        @if ($i != $stepnum) {
+            $seperator: #{','};
+        }
+
+        $gradient_steps: append(#{$gradient_steps}, #{$i}px #{$i}px $colour_mix $seperator);
+    }
+
+    @return $gradient_steps;
+}
+
 svg text {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.flex-row {
+    display: flex;
+
+    & > * + * {
+        margin-left: 64px;
+    }
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+
+    & > * + * {
+        margin-top: 64px;
+    }
+}
+
+.root {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 64px;
+
+    align-items: left;
+
+    // Prevent margin on child from pushing down backdrop
+    overflow: hidden;
+}
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.box {
+    background: #f8f8f8;
+    //margin: 64px 80px 64px 64px;
+    padding: 32px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+
+    border: 1px solid #e0e0e0;
+    box-shadow: 0px 0px 2px #eee, longshadow(#ddd, #aaa, 16, 1.0), 16px 16px 8px rgba(0, 0, 0, 0.8);
+}
+
+.pattern {
+    display: flex;
+    flex: 1;
+
+    height: 30rem;
+}
+
+.step {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    margin: 0 2px;
+
+    & + & {
+        margin-left: 0;
+    }
+
+    &.current {
+        .note {
+            background: #ecc;
+
+            &.selected {
+                background: #cc0000e0;
+                box-shadow: inset 0px 0px 0px 1px #000, 0px 0px 4px #f44;
+                transform: scale(1.05);
+            }
+        }
+    }
+}
+
+.note {
+    background: #ddd;
+    flex: 1;
+    margin: 2px 0;
+    cursor: pointer;
+    border-radius: 4px;
+
+    //padding-top: 100%;
+
+    & + & {
+        margin-top: 0;
+    }
+
+    &.selected {
+        background: #cc0000d0;
+    }
+}
+
+.display {
+    display: inline-block;
+    background: #3c1116;
+    box-shadow: inset 0px 0px 1px 4px #181818;
+    padding: 8px;
+    color: #d50203;
+    border-radius: 4px;
 }
