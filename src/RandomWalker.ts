@@ -1,24 +1,27 @@
 export default class RandomWalker {
-    averageFrequency: number;
-    sampleRate: number;
+    readonly averageFrequency: number;
+    readonly sampleRate: number;
 
-    averageSegmentLength: number;
-    segmentLength: number;
-    segmentPosition: number;
+    private averageSegmentLength: number;
+    private segmentLength: number;
+    private segmentPosition: number;
 
-    frequencyOffset: number;
-    lastFrequencyOffset: number;
-    frequencyOffsetDelta: number;
+    private frequencyOffset: number;
+    private lastFrequencyOffset: number;
+    private frequencyOffsetDelta: number;
 
-    phase: number;
+    private phase: number;
 
-    previousSign: number;
+    private previousSign: number;
 
-    amplitude: number;
-    targetAmplitude: number;
-    amplitudeCoefficient: number;
+    private amplitude: number;
+    private targetAmplitude: number;
+    private amplitudeCoefficient: number;
 
     constructor(averageFrequency: number, sampleRate: number) {
+        this.averageFrequency = averageFrequency;
+        this.sampleRate = sampleRate;
+
         this.averageSegmentLength = this.sampleRate / (1.0 * this.averageFrequency);
 
         this.segmentLength = 0.0;
@@ -33,7 +36,7 @@ export default class RandomWalker {
 
         this.amplitude = 0.25 + 0.75 * Math.random();
         this.targetAmplitude = this.amplitude;
-        this.amplitudeCoefficient = Math.exp(1000.0 / this.sampleRate) - 1;
+        this.amplitudeCoefficient = Math.exp(-1.0 / (2.0 * this.sampleRate));
     }
 
     render(): number {
@@ -56,12 +59,12 @@ export default class RandomWalker {
         const result = Math.sin(this.phase) * this.amplitude;
 
         // Move the amplitude towards the target amplitude (leaky integrator)
-        this.amplitude += (this.targetAmplitude - this.amplitude) * this.amplitudeCoefficient;
+        this.amplitude = this.targetAmplitude + (this.amplitude - this.targetAmplitude) * this.amplitudeCoefficient;
 
         // Increment and wrap phase
         this.phase += 2.0 * Math.PI * this.averageFrequency * this.frequencyOffset / this.sampleRate;
-        if (this.phase >= 2 * Math.PI) {
-            this.phase -= 2 * Math.PI;
+        if (this.phase >= 2.0 * Math.PI) {
+            this.phase -= 2.0 * Math.PI;
         }
 
         // Set a new target amplitude on zero crossings
@@ -74,6 +77,6 @@ export default class RandomWalker {
         this.segmentPosition += 1;
         this.frequencyOffset += this.frequencyOffsetDelta;
 
-        return result;
+        return 0.5 + result * 0.5;
     }
 }
