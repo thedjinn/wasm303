@@ -110,7 +110,7 @@ const handleInstruction = (dispatch: Parameters<Thunk>[0]) => (instruction: Inst
         case Opcode.SetSequencerStep:
             dispatch(setSequencerStep(instruction.operand));
             break;
-        case Opcode.Max:
+        case Opcode.SetCutoff:
             break;
     }
 }
@@ -143,11 +143,18 @@ export const setWaveformIndex = (index: number): Thunk => (dispatch, getState, e
     dispatch(slice.actions.setWaveformIndex(index));
 };
 
+export const setCutoff = (cutoff: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetCutoff,
+        operand: cutoff
+    });
+
+    dispatch(slice.actions.setCutoff(cutoff));
+};
+
 export const {
     setIsInitialized,
     setIsRunning,
-
-    setCutoff,
 
     setSequencerStep
 } = slice.actions;

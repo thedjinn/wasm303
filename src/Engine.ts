@@ -22,7 +22,7 @@ export type OpcodeWithU32 =
     typeof Opcode.SetSequencerStep;
 
 export type OpcodeWithF32 =
-    typeof Opcode.Max; // FIXME: This is a placeholder
+    typeof Opcode.SetCutoff;
 
 export type Opcode =
     OpcodeWithoutOperand |
