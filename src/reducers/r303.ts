@@ -7,6 +7,19 @@ import {
 
 import Opcode from "../Opcode";
 
+interface Step {
+    pitch: number;
+    octaveUp: boolean;
+    octaveDown: boolean;
+    hasNote: boolean;
+    hasSlide: boolean;
+    hasAccent: boolean;
+}
+
+interface Pattern {
+    steps: Step[];
+}
+
 interface State {
     isInitialized: boolean;
     isRunning: boolean;
@@ -15,6 +28,36 @@ interface State {
     cutoff: number;
 
     sequencerStep: number;
+
+    patterns: Pattern[];
+    currentPatternIndex: number;
+}
+
+function makeDemoPattern(): Pattern {
+    function step(pitch: number, octaveUp: boolean, octaveDown: boolean, hasNote: boolean, hasSlide: boolean, hasAccent: boolean): Step {
+        return { pitch, octaveUp, octaveDown, hasNote, hasSlide, hasAccent };
+    }
+
+    return {
+        steps: [
+            step(39, false, false, true,  false, true),
+            step(42, false, false, true,  false, false),
+            step(44, false, false, true,  false, false),
+            step(46, false, false, true,  false, false),
+            step(49, false, false, true,  false, false),
+            step(51, false, false, true,  false, false),
+            step(46, false, false, true,  false, false),
+            step(49, false, false, true,  false, false),
+            step(39, false, false, true,  false, false),
+            step(42, false, false, true,  false, false),
+            step(44, false, false, true,  false, false),
+            step(49, false, false, true,  false, false),
+            step(48, false, false, true,  false, false),
+            step(41, false, false, false, true,  false),
+            step(40, false, false, true,  false, false),
+            step(47, false, false, false, true,  false)
+        ]
+    };
 }
 
 const initialState: State = {
@@ -24,7 +67,12 @@ const initialState: State = {
     waveformIndex: 0,
     cutoff: 2000.0,
 
-    sequencerStep: 0
+    sequencerStep: 0,
+
+    patterns: [
+        makeDemoPattern()
+    ],
+    currentPatternIndex: 0
 };
 
 const slice = createSlice({
