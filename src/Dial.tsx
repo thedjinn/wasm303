@@ -91,7 +91,7 @@ export default function Dial({
     }, [min, max, onChange, isLogarithmic]);
 
     return (
-        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" width="200" height="100" onMouseDown={handleMouseDown} onMouseMove={isMouseDown ? handleMouseMove : undefined}>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" width="100" height="100" onMouseDown={handleMouseDown} onMouseMove={isMouseDown ? handleMouseMove : undefined}>
             <path d={backgroundArc} fill="darkred" />
             <path d={foregroundArc} fill="red" />
 
