@@ -22,10 +22,10 @@ import {
 } from "./reducers/r303";
 
 const visibleNotes = (function() {
-    const result = [];
+    const result: [number, boolean][] = [];
 
     for (let i = 52; i >= 30; --i) {
-        result.push(i);
+        result.push([i, i % 3 === 0]);
     }
 
     return result;
@@ -109,8 +109,8 @@ export default function App(): JSX.Element {
 
                         <div>
                             <div className="flex-row narrow-spacing" style={{alignItems: "center"}}>
-                                <div className="display">
-                                    Hello
+                                <div className="display" style={{width: "64px", textAlign: "center"}}>
+                                    {sequencerStep}
                                 </div>
 
                                 <button onClick={handleStart}>Start</button>
@@ -123,14 +123,38 @@ export default function App(): JSX.Element {
                     </div>
                 </div>
 
-                <div className="box pattern">
-                    {pattern.steps.map((step, index) => (
-                        <div className={classNames("step", sequencerStep === index && "current")} key={"step" + index}>
-                            {visibleNotes.map(note => (
-                                <div className={classNames("note", step.pitch === note && "selected")} key={"note" + note}></div>
+                <div className="box dark pattern-box flex-1">
+                    <div className="pattern">
+                        <div className="piano-roll">
+                            {visibleNotes.map(([note, isBlackKey]) => (
+                                <div className={classNames("piano-key", isBlackKey && "black-key")} key={"note" + note}>{note}</div>
                             ))}
+
+                            <div className="gap"></div>
                         </div>
-                    ))}
+
+                        {pattern.steps.map((step, index) => (
+                            <div className={classNames("step", sequencerStep === index && "current")} key={"step" + index}>
+                                {visibleNotes.map(([note, isBlackKey]) => (
+                                    <div className={classNames("note", step.pitch === note && "selected", isBlackKey && "black-key")} key={"note" + note}></div>
+                                ))}
+
+                                <div className="step-indicator"></div>
+
+                                <div className="modifiers flex-row">
+                                    <div className="flex-column flex-1">
+                                        <div className={classNames("modifier", step.hasSlide && "active")}>slide</div>
+                                        <div className={classNames("modifier", step.hasAccent && "active")}>accent</div>
+                                    </div>
+
+                                    <div className="flex-column flex-1">
+                                        <div className={classNames("modifier", step.octaveUp && "up")}>up</div>
+                                        <div className={classNames("modifier", step.octaveDown && "down")}>down</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </>
