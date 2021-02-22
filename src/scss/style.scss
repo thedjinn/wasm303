@@ -29,8 +29,12 @@ svg text {
 .flex-row {
     display: flex;
 
-    & > * + * {
+    &.wide-spacing > * + * {
         margin-left: 64px;
+    }
+
+    &.narrow-spacing > * + * {
+        margin-left: 8px;
     }
 }
 
@@ -38,12 +42,20 @@ svg text {
     display: flex;
     flex-direction: column;
 
-    & > * + * {
+    &.wide-spacing > * + * {
         margin-top: 64px;
+    }
+
+    &.narrow-spacing > * + * {
+        margin-top: 8px;
     }
 }
 
-.root {
+.flex-1 {
+    flex: 1;
+}
+
+#root {
     position: relative;
     height: 100vh;
     display: flex;
