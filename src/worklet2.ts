@@ -101,7 +101,7 @@ class Processor extends AudioWorkletProcessor {
                 this.leftBuffer = new Float32Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_left_pointer(), bufferSize);
                 this.rightBuffer = new Float32Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_right_pointer(), bufferSize);
 
-                this.programBuffer = new Uint8Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_program_pointer(), 1024);
+                this.programBuffer = new Uint8Array(this.wasm.exports.memory.buffer, this.wasm.exports.get_program_pointer(), 32768);
 
                 this.sendBuffer = new RingBuffer(event.data.sendStorage);
                 this.receiveBuffer = new RingBuffer(event.data.receiveStorage);
@@ -123,7 +123,7 @@ class Processor extends AudioWorkletProcessor {
         }
 
         // Send ringbuffer data to wasm
-        let programSize = this.receiveBuffer.read(this.programBuffer, 1024);
+        let programSize = this.receiveBuffer.read(this.programBuffer, 32768);
 
         // Process inside wasm
         programSize = this.wasm.exports.process(programSize);

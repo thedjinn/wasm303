@@ -1,4 +1,4 @@
-const MAX_PROGRAM_SIZE: usize = 1024;
+const MAX_PROGRAM_SIZE: usize = 32768;
 
 use enumtojs::enum_to_js;
 

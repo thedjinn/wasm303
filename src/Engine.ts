@@ -107,8 +107,8 @@ export default class Engine {
 
         node.connect(this.context.destination);
 
-        const sendStorage = new SharedArrayBuffer(4096);
-        const receiveStorage = new SharedArrayBuffer(4096);
+        const sendStorage = new SharedArrayBuffer(32768);
+        const receiveStorage = new SharedArrayBuffer(32768);
 
         this.sendBuffer = new RingBuffer(sendStorage);
         this.receiveBuffer = new RingBuffer(receiveStorage);
