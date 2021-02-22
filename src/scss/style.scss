@@ -216,6 +216,7 @@ svg text {
 .modifiers {
     display: flex;
     flex-direction: row;
+    margin: 0 1px;
     margin-top: 4px;
 
     & > * + * {
@@ -232,15 +233,35 @@ svg text {
     align-items: center;
     justify-content: center;
     font-size: 14px;
+    cursor: pointer;
 
     & + & {
         margin-top: 4px;
+    }
+
+    &:hover {
+        background: #282828;
+    }
+
+    &:active {
+        background: #1e1e1e;
+        color: #999;
     }
 
     &.active {
         background: #888;
         color: #222;
         border-color: #aaa;
+
+        &:hover {
+            background: #999;
+        }
+
+        &:active {
+            border-color: #999;
+            background: #888;
+            color: #111;
+        }
     }
 }
 
