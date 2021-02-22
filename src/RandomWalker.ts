@@ -18,6 +18,8 @@ export default class RandomWalker {
     private targetAmplitude: number;
     private amplitudeCoefficient: number;
 
+    // TODO: Add logarithmic flag and range
+
     constructor(averageFrequency: number, sampleRate: number) {
         this.averageFrequency = averageFrequency;
         this.sampleRate = sampleRate;

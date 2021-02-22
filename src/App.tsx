@@ -11,7 +11,12 @@ const randomWalker = new RandomWalker(0.1, 30);
 
 import {
     bootstrap,
+    setTuning,
     setCutoff,
+    setResonance,
+    setEnvMod,
+    setDecay,
+    setAccent,
     setWaveformIndex,
     start
 } from "./reducers/r303";
@@ -32,7 +37,12 @@ export default function App(): JSX.Element {
     const isInitialized = useSelector((state: RootState) => state.r303.isInitialized);
     const sequencerStep = useSelector((state: RootState) => state.r303.sequencerStep);
 
+    const tuning = useSelector((state: RootState) => state.r303.tuning);
     const cutoff = useSelector((state: RootState) => state.r303.cutoff);
+    const resonance = useSelector((state: RootState) => state.r303.resonance);
+    const envMod = useSelector((state: RootState) => state.r303.envMod);
+    const decay = useSelector((state: RootState) => state.r303.decay);
+    const accent = useSelector((state: RootState) => state.r303.accent);
     const waveformIndex = useSelector((state: RootState) => state.r303.waveformIndex);
 
     const pattern = useSelector((state: RootState) => state.r303.patterns[state.r303.currentPatternIndex]);
@@ -49,8 +59,28 @@ export default function App(): JSX.Element {
         dispatch(bootstrap());
     }, [dispatch]);
 
-    const handleChange = useCallback((value: number) => {
+    const handleTuningChange = useCallback((value: number) => {
+        dispatch(setTuning(value));
+    }, [dispatch]);
+
+    const handleCutoffChange = useCallback((value: number) => {
         dispatch(setCutoff(value));
+    }, [dispatch]);
+
+    const handleResonanceChange = useCallback((value: number) => {
+        dispatch(setResonance(value));
+    }, [dispatch]);
+
+    const handleEnvModChange = useCallback((value: number) => {
+        dispatch(setEnvMod(value));
+    }, [dispatch]);
+
+    const handleDecayChange = useCallback((value: number) => {
+        dispatch(setDecay(value));
+    }, [dispatch]);
+
+    const handleAccentChange = useCallback((value: number) => {
+        dispatch(setAccent(value));
     }, [dispatch]);
 
     const startRandomWalker = useCallback(() => {
@@ -66,8 +96,12 @@ export default function App(): JSX.Element {
             <div className="flex-column wide-spacing flex-1">
                 <div className="flex-row wide-spacing">
                     <div className="box flex-row narrow-spacing">
-                        <Dial value={cutoff} min={20} max={10000} onChange={handleChange} />
-                        <Dial value={cutoff} min={20} max={10000} onChange={handleChange} isLogarithmic />
+                        <Dial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
+                        <Dial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
+                        <Dial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
+                        <Dial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
+                        <Dial value={decay} min={0} max={2000} onChange={handleDecayChange} isLogarithmic />
+                        <Dial value={accent} min={0} max={1} onChange={handleAccentChange} />
                     </div>
 
                     <div className="box" style={{flexDirection: "column", flex: 1}}>

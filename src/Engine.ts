@@ -22,7 +22,12 @@ export type OpcodeWithU32 =
     typeof Opcode.SetSequencerStep;
 
 export type OpcodeWithF32 =
-    typeof Opcode.SetCutoff;
+    typeof Opcode.SetTuning |
+    typeof Opcode.SetCutoff |
+    typeof Opcode.SetResonance |
+    typeof Opcode.SetEnvMod |
+    typeof Opcode.SetDecay |
+    typeof Opcode.SetAccent;
 
 export type Opcode =
     OpcodeWithoutOperand |

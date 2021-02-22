@@ -25,7 +25,12 @@ interface State {
     isRunning: boolean;
 
     waveformIndex: number;
+    tuning: number;
     cutoff: number;
+    resonance: number;
+    envMod: number;
+    decay: number;
+    accent: number;
 
     sequencerStep: number;
 
@@ -65,7 +70,12 @@ const initialState: State = {
     isRunning: false,
 
     waveformIndex: 0,
+    tuning: 0,
     cutoff: 2000.0,
+    resonance: 0.2,
+    envMod: 0.2,
+    decay: 150.0,
+    accent: 0.2,
 
     sequencerStep: 0,
 
@@ -91,8 +101,28 @@ const slice = createSlice({
             state.waveformIndex = action.payload;
         },
 
+        setTuning(state, action: PayloadAction<number>) {
+            state.tuning = action.payload;
+        },
+
         setCutoff(state, action: PayloadAction<number>) {
             state.cutoff = action.payload;
+        },
+
+        setResonance(state, action: PayloadAction<number>) {
+            state.resonance = action.payload;
+        },
+
+        setEnvMod(state, action: PayloadAction<number>) {
+            state.envMod = action.payload;
+        },
+
+        setDecay(state, action: PayloadAction<number>) {
+            state.decay = action.payload;
+        },
+
+        setAccent(state, action: PayloadAction<number>) {
+            state.accent = action.payload;
         },
 
         setSequencerStep(state, action: PayloadAction<number>) {
@@ -143,6 +173,15 @@ export const setWaveformIndex = (index: number): Thunk => (dispatch, getState, e
     dispatch(slice.actions.setWaveformIndex(index));
 };
 
+export const setTuning = (tuning: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetTuning,
+        operand: tuning
+    });
+
+    dispatch(slice.actions.setTuning(tuning));
+};
+
 export const setCutoff = (cutoff: number): Thunk => (dispatch, getState, engine) => {
     engine.sendInstruction({
         opcode: Opcode.SetCutoff,
@@ -150,6 +189,42 @@ export const setCutoff = (cutoff: number): Thunk => (dispatch, getState, engine)
     });
 
     dispatch(slice.actions.setCutoff(cutoff));
+};
+
+export const setResonance = (resonance: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetResonance,
+        operand: resonance
+    });
+
+    dispatch(slice.actions.setResonance(resonance));
+};
+
+export const setEnvMod = (envMod: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetEnvMod,
+        operand: envMod
+    });
+
+    dispatch(slice.actions.setEnvMod(envMod));
+};
+
+export const setDecay = (decay: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetDecay,
+        operand: decay
+    });
+
+    dispatch(slice.actions.setDecay(decay));
+};
+
+export const setAccent = (accent: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetAccent,
+        operand: accent
+    });
+
+    dispatch(slice.actions.setAccent(accent));
 };
 
 export const {
