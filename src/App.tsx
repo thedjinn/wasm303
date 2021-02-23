@@ -95,13 +95,23 @@ export default function App(): JSX.Element {
 
             <div className="flex-column wide-spacing flex-1">
                 <div className="flex-row wide-spacing">
-                    <div className="box flex-row narrow-spacing">
-                        <Dial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
-                        <Dial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
-                        <Dial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
-                        <Dial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
-                        <Dial value={decay} min={0} max={2000} onChange={handleDecayChange} isLogarithmic />
-                        <Dial value={accent} min={0} max={1} onChange={handleAccentChange} />
+                    <div className="flex-column">
+                        <div className="box flex-row narrow-spacing">
+                            <Dial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
+                            <Dial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
+                            <Dial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
+                            <Dial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
+                            <Dial value={decay} min={0} max={2000} onChange={handleDecayChange} isLogarithmic />
+                            <Dial value={accent} min={0} max={1} onChange={handleAccentChange} />
+                        </div>
+
+                        <div className="half-box flex-row narrow-spacing">
+                            <button onClick={handleStart}>Start</button>
+                            <button onClick={handleToggleWaveform}>Toggle waveform</button>
+                            <button onClick={startRandomWalker}>Enable random walker</button>
+
+                            {isInitialized || <p>Loading...</p>}
+                        </div>
                     </div>
 
                     <div className="box" style={{flexDirection: "column", flex: 1}}>
@@ -113,11 +123,6 @@ export default function App(): JSX.Element {
                                     {sequencerStep}
                                 </div>
 
-                                <button onClick={handleStart}>Start</button>
-                                <button onClick={handleToggleWaveform}>Toggle waveform</button>
-                                <button onClick={startRandomWalker}>Enable random walker</button>
-
-                                {isInitialized || <p>Loading...</p>}
                             </div>
                         </div>
                     </div>
