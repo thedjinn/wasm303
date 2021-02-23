@@ -21,11 +21,20 @@ import {
     start
 } from "./reducers/r303";
 
+const noteNames = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+
 const visibleNotes = (function() {
     const result: [number, boolean][] = [];
 
-    for (let i = 52; i >= 30; --i) {
-        result.push([i, i % 3 === 0]);
+    for (let i = 60; i >= 36; --i) {
+        const pitchClass = i % 12;
+        const isBlack = pitchClass === 1 ||
+            pitchClass === 3 ||
+            pitchClass === 6 ||
+            pitchClass === 8 ||
+            pitchClass === 10;
+
+        result.push([i, isBlack]);
     }
 
     return result;
@@ -132,7 +141,7 @@ export default function App(): JSX.Element {
                     <div className="pattern">
                         <div className="piano-roll">
                             {visibleNotes.map(([note, isBlackKey]) => (
-                                <div className={classNames("piano-key", isBlackKey && "black-key")} key={"note" + note}>{note}</div>
+                                <div className={classNames("piano-key", isBlackKey && "black-key")} key={"note" + note}>{noteNames[note % 12]}</div>
                             ))}
 
                             <div className="gap"></div>
