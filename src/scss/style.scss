@@ -28,6 +28,7 @@ $ledRedGlowOuter: #7b1916;
 body {
     font-family: sans-serif;
     font-size: 12px;
+    color: #060606;
 }
 
 svg text {
@@ -42,6 +43,7 @@ button {
     position: relative;
     outline: none;
     padding: 2px 8px;
+    cursor: pointer;
 
     border-radius: 0px;
     box-shadow: 0px 1px 1px 0px #00000080, 0px 2px 3px #00000020;
@@ -82,6 +84,10 @@ button {
     &.narrow-spacing > * + * {
         margin-left: 8px;
     }
+
+    &.tiny-spacing > * + * {
+        margin-left: 4px;
+    }
 }
 
 .flex-column {
@@ -94,6 +100,10 @@ button {
 
     &.narrow-spacing > * + * {
         margin-top: 8px;
+    }
+
+    &.tiny-spacing > * + * {
+        margin-top: 4px;
     }
 }
 
@@ -111,7 +121,7 @@ button {
     align-items: left;
 
     // Prevent margin on child from pushing down backdrop
-    overflow: hidden;
+    oxverflow: hidden;
 }
 
 .backdrop {
@@ -123,29 +133,57 @@ button {
     z-index: -1;
 }
 
-.box {
+.box, .half-box {
     background: #f8f8f8;
-    padding: 32px;
     display: flex;
-
     border: 1px solid #e0e0e0;
+}
+
+.box.dark, .half-box.dark {
+    background: #444;
+    border: 1px solid #282828;
+    color: #f8f8f8;
+}
+
+.box {
+    padding: 32px;
+
     box-shadow: 0px 0px 2px #eee, longshadow(#ddd, #aaa, 16, 1.0), 16px 16px 8px rgba(0, 0, 0, 0.8);
 
     &.dark {
-        background: #444;
-        border: 1px solid #282828;
         box-shadow: 0px 0px 2px #383838, longshadow(#333, #222, 16, 1.0), 16px 16px 8px rgba(0, 0, 0, 0.8);
     }
 }
 
 .half-box {
-    background: #f8f8f8;
     margin: 8px -8px -8px 8px;
     padding: 16px;
-    display: flex;
 
-    border: 1px solid #e0e0e0;
     box-shadow: 0px 0px 2px #eee, longshadow(#bbb, #aaa, 8, 1.0), 8px 8px 4px rgba(0, 0, 0, 0.8);
+
+    &.dark {
+        box-shadow: 0px 0px 2px #383838, longshadow(#282828, #222, 8, 1.0), 8px 8px 4px rgba(0, 0, 0, 0.8);
+    }
+}
+
+.box, .half-box {
+    // Original background image:
+    //<svg width="650" height="500">
+        //<filter id='paper' x='0%' y='0%' width='100%' height="100%">
+            //<feTurbulence type="fractalNoise" baseFrequency='0.5' result='noise' numOctaves="1" />
+            //<feDiffuseLighting in='noise' result='light' lighting-color='#f8f8f8' surfaceScale='0.5' diffuseConstant="1">
+                //<feDistantLight azimuth='-90' elevation='135' />
+            //</feDiffuseLighting>
+            //<feColorMatrix in="light" mode="matrix" values="1 0 0 0 0.3  0 1 0 0 0.3  0 0 1 0 0.3  0 0 0 1 0" />
+        //</filter>
+        //<rect x="0" y="0" width="100%" height="100%" filter="url(#paper)" fill="none" />
+    //</svg>
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='650' height='500'%3E%3Cfilter id='paper' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' result='noise' numOctaves='1' /%3E%3CfeDiffuseLighting in='noise' result='light' lighting-color='%23f8f8f8' surfaceScale='0.5' diffuseConstant='1'%3E%3CfeDistantLight azimuth='-90' elevation='135' /%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='light' mode='matrix' values='1 0 0 0 0.3 0 1 0 0 0.3 0 0 1 0 0.3 0 0 0 1 0' /%3E%3C/filter%3E%3Crect x='0' y='0' width='100%25' height='100%25' filter='url(%23paper)' fill='none' /%3E%3C/svg%3E");
+
+    &.dark {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='650' height='500'%3E%3Cfilter id='paper' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' result='noise' numOctaves='1' /%3E%3CfeDiffuseLighting in='noise' result='light' lighting-color='%23f8f8f8' surfaceScale='0.1' diffuseConstant='1'%3E%3CfeDistantLight azimuth='-90' elevation='135' /%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='light' mode='matrix' values='1 0 0 0 -0.605 0 1 0 0 -0.605 0 0 1 0 -0.605 0 0 0 1 0' /%3E%3C/filter%3E%3Crect x='0' y='0' width='100%25' height='100%25' filter='url(%23paper)' fill='none' /%3E%3C/svg%3E");
+    }
 }
 
 .pattern {
@@ -219,6 +257,7 @@ button {
     margin: 2px 0;
     padding: 0 16px;
     text-align: center;
+    color: #060606;
 
     & + & {
         margin-top: 0;
@@ -315,4 +354,32 @@ button {
     padding: 8px;
     color: $ledRed;
     border-radius: 4px;
+}
+
+.led {
+    box-shadow: inset 0px 0px 1px $ledBorder, 0px 0.5px 1px 0.5px #ffffff80, 0px -0.5px 1px 0.5px #00000060;
+    background: $ledBackground;
+    width: 16px;
+    height: 8px;
+
+    &.active {
+        background: radial-gradient(circle farthest-side at center, $ledRedGlowInner, $ledRedGlowOuter);
+    }
+}
+
+.led-button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+
+    button {
+        width: 32px;
+        height: 16px;
+        margin-top: 6px;
+        margin-bottom: 2px;
+    }
+}
+
+.button-label {
 }

@@ -6,6 +6,8 @@ import { RootState } from "./reducers";
 import Backdrop from "./Backdrop";
 import Dial from "./Dial";
 import RandomWalker from "./RandomWalker";
+import Led from "./Led";
+import LedButton from "./LedButton";
 
 const randomWalker = new RandomWalker(0.1, 30);
 
@@ -26,7 +28,8 @@ const noteNames = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "
 const visibleNotes = (function() {
     const result: [number, boolean][] = [];
 
-    for (let i = 60; i >= 36; --i) {
+    //for (let i = 60; i >= 36; --i) {
+    for (let i = 48; i >= 36; --i) {
         const pitchClass = i % 12;
         const isBlack = pitchClass === 1 ||
             pitchClass === 3 ||
@@ -115,9 +118,11 @@ export default function App(): JSX.Element {
                         </div>
 
                         <div className="half-box flex-row narrow-spacing">
-                            <button onClick={handleStart}>Start</button>
-                            <button onClick={handleToggleWaveform}>Toggle waveform</button>
-                            <button onClick={startRandomWalker}>Enable random walker</button>
+                            <LedButton title="START" isActive={false} onClick={handleStart} />
+                            <LedButton title="WAVEFORM" isActive={false} onClick={handleToggleWaveform} />
+                            <LedButton title="RANDOM WALK" isActive={false} onClick={startRandomWalker} />
+
+                            <Led isActive={isInitialized} />
 
                             {isInitialized || <p>Loading...</p>}
                         </div>
@@ -137,37 +142,47 @@ export default function App(): JSX.Element {
                     </div>
                 </div>
 
-                <div className="box dark pattern-box flex-1">
-                    <div className="pattern">
-                        <div className="piano-roll">
-                            {visibleNotes.map(([note, isBlackKey]) => (
-                                <div className={classNames("piano-key", isBlackKey && "black-key")} key={"note" + note}>{noteNames[note % 12]}</div>
-                            ))}
-
-                            <div className="gap"></div>
-                        </div>
-
-                        {pattern.steps.map((step, index) => (
-                            <div className={classNames("step", sequencerStep === index && "current")} key={"step" + index}>
+                <div className="flex-row">
+                    <div className="box dark pattern-box flex-1">
+                        <div className="pattern">
+                            <div className="piano-roll">
                                 {visibleNotes.map(([note, isBlackKey]) => (
-                                    <div className={classNames("note", step.pitch === note && "selected", isBlackKey && "black-key")} key={"note" + note}></div>
+                                    <div className={classNames("piano-key", isBlackKey && "black-key")} key={"note" + note}>{noteNames[note % 12]}</div>
                                 ))}
 
-                                <div className="step-indicator"></div>
+                                <div className="gap"></div>
+                            </div>
 
-                                <div className="modifiers flex-row">
-                                    <div className="flex-column flex-1">
-                                        <div className={classNames("modifier", step.hasSlide && "active")}>slide</div>
-                                        <div className={classNames("modifier", step.hasAccent && "active")}>accent</div>
-                                    </div>
+                            {pattern.steps.map((step, index) => (
+                                <div className={classNames("step", sequencerStep === index && "current")} key={"step" + index}>
+                                    {visibleNotes.map(([note, isBlackKey]) => (
+                                        <div className={classNames("note", step.pitch === note && "selected", isBlackKey && "black-key")} key={"note" + note}></div>
+                                    ))}
 
-                                    <div className="flex-column flex-1">
-                                        <div className={classNames("modifier", step.octaveUp && "up")}>up</div>
-                                        <div className={classNames("modifier", step.octaveDown && "down")}>down</div>
+                                    <div className="step-indicator"></div>
+
+                                    <div className="modifiers flex-row">
+                                        <div className="flex-column flex-1">
+                                            <div className={classNames("modifier", step.hasSlide && "active")}>slide</div>
+                                            <div className={classNames("modifier", step.hasAccent && "active")}>accent</div>
+                                        </div>
+
+                                        <div className="flex-column flex-1">
+                                            <div className={classNames("modifier", step.octaveUp && "up")}>up</div>
+                                            <div className={classNames("modifier", step.octaveDown && "down")}>down</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="half-box dark">
+                        <div className="flex-column narrow-spacing">
+                            <button>Clear</button>
+                            <button>Randomize</button>
+                            <button>Retrograde</button>
+                        </div>
                     </div>
                 </div>
             </div>
