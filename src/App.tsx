@@ -109,12 +109,35 @@ export default function App(): JSX.Element {
                 <div className="flex-row wide-spacing">
                     <div className="flex-column">
                         <div className="box flex-row narrow-spacing">
-                            <Dial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
-                            <Dial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
-                            <Dial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
-                            <Dial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
-                            <Dial value={decay} min={0} max={2000} onChange={handleDecayChange} isLogarithmic />
-                            <Dial value={accent} min={0} max={1} onChange={handleAccentChange} />
+                            <div className="flex-column flex-center">
+                                <span className="label">TUNING</span>
+                                <Dial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
+                            </div>
+
+                            <div className="flex-column flex-center">
+                                <span className="label">CUT OFF FREQ</span>
+                                <Dial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
+                            </div>
+
+                            <div className="flex-column flex-center">
+                                <span className="label">RESONANCE</span>
+                                <Dial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
+                            </div>
+
+                            <div className="flex-column flex-center">
+                                <span className="label">ENV MOD</span>
+                                <Dial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
+                            </div>
+
+                            <div className="flex-column flex-center">
+                                <span className="label">DECAY</span>
+                                <Dial value={decay} min={0} max={2000} onChange={handleDecayChange} isLogarithmic />
+                            </div>
+
+                            <div className="flex-column flex-center">
+                                <span className="label">ACCENT</span>
+                                <Dial value={accent} min={0} max={1} onChange={handleAccentChange} />
+                            </div>
                         </div>
 
                         <div className="half-box flex-row narrow-spacing">

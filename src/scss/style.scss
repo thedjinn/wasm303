@@ -111,6 +111,10 @@ button {
     flex: 1;
 }
 
+.flex-center {
+    align-items: center;
+}
+
 #root {
     position: relative;
     height: 100vh;
@@ -371,7 +375,6 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-weight: bold;
 
     button {
         width: 32px;
@@ -381,5 +384,6 @@ button {
     }
 }
 
-.button-label {
+.label {
+    font-weight: bold;
 }

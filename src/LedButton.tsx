@@ -16,7 +16,7 @@ export default function LedButton({
         <div className="led-button-wrapper">
             <div className={classNames("led", isActive && "active")}></div>
             <button onClick={onClick}></button>
-            <span className="button-label">{title}</span>
+            <span className="label">{title}</span>
         </div>
     );
 }
