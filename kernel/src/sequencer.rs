@@ -1,5 +1,8 @@
 use crate::kernel::SAMPLE_RATE;
 
+const MAX_PATTERN_LENGTH: usize = 16;
+const MAX_PATTERN_COUNT: usize = 8;
+
 pub struct Step {
     pub pitch: u8,
     pub is_enabled: bool,
@@ -9,8 +12,31 @@ pub struct Step {
     pub has_up: bool
 }
 
+impl Step {
+    fn new() -> Self {
+        Step {
+            pitch: 36,
+            is_enabled: true,
+            has_accent: false,
+            has_slide: false,
+            has_down: false,
+            has_up: false
+        }
+    }
+}
+
 struct Pattern {
-    steps: Vec<Step>
+    steps: Vec<Step>,
+    length: usize
+}
+
+impl Pattern {
+    fn new() -> Self {
+        Pattern {
+            steps: (0..MAX_PATTERN_LENGTH).map(|_| Step::new()).collect(),
+            length: MAX_PATTERN_LENGTH
+        }
+    }
 }
 
 pub struct Sequencer {
@@ -59,7 +85,8 @@ impl Sequencer {
                 Step { pitch: 52, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
                 Step { pitch: 40, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
                 Step { pitch: 47, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false }
-            ]
+            ],
+            length: 16
         });
 
         sequencer

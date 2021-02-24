@@ -56,7 +56,7 @@ impl R303 {
             vm,
 
             delay: Delay::new(),
-            sequencer: Sequencer::demo(),
+            sequencer: Sequencer::new(),
             vco: VCO::new(),
             distortion: FoldbackDistortion::new(),
 
