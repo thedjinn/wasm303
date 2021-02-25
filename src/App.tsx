@@ -131,7 +131,7 @@ export default function App(): JSX.Element {
 
                             <div className="flex-column flex-center">
                                 <span className="label">DECAY</span>
-                                <Dial value={decay} min={0} max={2000} onChange={handleDecayChange} isLogarithmic />
+                                <Dial value={decay} min={1} max={2000} onChange={handleDecayChange} isLogarithmic />
                             </div>
 
                             <div className="flex-column flex-center">
