@@ -2,6 +2,7 @@ const Opcode = {
     Nop: 0,
     SetWaveformIndex: 20,
     SetDelayLength: 21,
+    SetPatternData: 22,
     SetCutoff: 40,
     SetResonance: 41,
     SetEnvMod: 42,

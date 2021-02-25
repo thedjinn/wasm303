@@ -12,6 +12,7 @@ pub enum Opcode {
     // Single u32 operand
     SetWaveformIndex = 20,
     SetDelayLength,
+    SetPatternData,
 
     // Single f32 operand
     SetCutoff = 40,

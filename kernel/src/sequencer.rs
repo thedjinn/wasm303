@@ -58,7 +58,7 @@ impl Sequencer {
             step_length: (SAMPLE_RATE / 8.0) as u32, // 120 bpm
             pattern_position: 10000000,
 
-            patterns: Vec::new(),
+            patterns: (0..MAX_PATTERN_COUNT).map(|_| Pattern::new()).collect(),
             current_pattern: 0,
             next_pattern: 0
         }
@@ -92,6 +92,10 @@ impl Sequencer {
         sequencer
     }
 
+    pub fn set_pattern_data(&mut self, pattern_index: usize, step_index: usize, step: Step) {
+        self.patterns[pattern_index].steps[step_index] = step;
+    }
+
     pub fn set_tempo(&mut self, tempo: f32) {
         self.step_length = (SAMPLE_RATE * 60.0 / tempo / 4.0) as u32;
     }
@@ -112,7 +116,7 @@ impl Sequencer {
         self.pattern_position += 1;
 
         // advance pattern if we reached the end
-        if self.pattern_position >= self.patterns[self.current_pattern].steps.len() {
+        if self.pattern_position >= self.patterns[self.current_pattern].length {
             self.pattern_position = 0;
             self.current_pattern = self.next_pattern;
         }

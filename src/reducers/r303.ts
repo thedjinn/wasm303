@@ -154,7 +154,23 @@ export const bootstrap = (): Thunk => async (dispatch, getState, engine) => {
         return;
     }
 
-    // TODO: Emit initial state instructions
+    // Emit initial state instructions
+    getState().r303.patterns.forEach(function(pattern, patternIndex) {
+        pattern.steps.forEach(function(step, stepIndex) {
+            // TODO: Convert this into one large send call
+            engine.sendInstruction({
+                opcode: Opcode.SetPatternData,
+                operand: (patternIndex << 0) +
+                    (stepIndex << 8) +
+                    (step.pitch << 16) +
+                    (+step.octaveDown << 28) +
+                    (+step.octaveUp << 27) +
+                    (+step.hasSlide << 26) +
+                    (+step.hasAccent << 25) +
+                    (+step.hasNote << 24)
+            });
+        });
+    });
 
     dispatch(slice.actions.setIsInitialized(true));
 };

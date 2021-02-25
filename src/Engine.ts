@@ -19,7 +19,8 @@ export type OpcodeWithoutOperand =
 
 export type OpcodeWithU32 =
     typeof Opcode.SetWaveformIndex |
-    typeof Opcode.SetSequencerStep;
+    typeof Opcode.SetSequencerStep |
+    typeof Opcode.SetPatternData;
 
 export type OpcodeWithF32 =
     typeof Opcode.SetTuning |

@@ -2,7 +2,7 @@ use crate::delay::Delay;
 use crate::distortion::FoldbackDistortion;
 use crate::filters::{OnePole,BiQuad,TBFilter};
 use crate::kernel::{ANTI_DENORMAL,SAMPLE_RATE};
-use crate::sequencer::Sequencer;
+use crate::sequencer::{Sequencer,Step};
 use crate::vco::VCO;
 use crate::vm::{Instruction, Opcode, VM};
 
@@ -208,6 +208,22 @@ impl R303 {
             SetDelayFeedback => self.delay.feedback = instruction.decode(0),
             SetWaveformIndex => self.set_waveform_index(instruction.decode(0)),
             SetDelayLength => self.delay.length = instruction.decode_u32(0) as usize,
+
+            SetPatternData => {
+                let flags: u8 = instruction.decode(3);
+
+                let step = Step {
+                    pitch: instruction.decode(2),
+                    is_enabled: (flags & (1 << 0)) != 0,
+                    has_accent: (flags & (1 << 1)) != 0,
+                    has_slide: (flags & (1 << 2)) != 0,
+                    has_up: (flags & (1 << 3)) != 0,
+                    has_down: (flags & (1 << 4)) != 0
+                };
+
+                self.sequencer.set_pattern_data(instruction.decode::<u8>(0) as usize, instruction.decode::<u8>(1) as usize, step);
+            },
+
             _ => ()
         }
     }
