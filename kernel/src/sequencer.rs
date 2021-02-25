@@ -64,34 +64,6 @@ impl Sequencer {
         }
     }
 
-    pub fn demo() -> Self {
-        let mut sequencer = Self::new();
-
-        sequencer.patterns.push(Pattern {
-            steps: vec![
-                Step { pitch: 40, is_enabled: true, has_accent: true, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 45, is_enabled: true, has_accent: false, has_slide: true, has_down: false, has_up: false },
-                Step { pitch: 47, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 52, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 45, is_enabled: true, has_accent: true, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 47, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 40, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 45, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 47, is_enabled: true, has_accent: true, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 52, is_enabled: true, has_accent: false, has_slide: true, has_down: false, has_up: false },
-                Step { pitch: 47, is_enabled: true, has_accent: false, has_slide: true, has_down: false, has_up: false },
-                Step { pitch: 45, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 40, is_enabled: true, has_accent: true, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 52, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 40, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false },
-                Step { pitch: 47, is_enabled: true, has_accent: false, has_slide: false, has_down: false, has_up: false }
-            ],
-            length: 16
-        });
-
-        sequencer
-    }
-
     pub fn set_pattern_data(&mut self, pattern_index: usize, step_index: usize, step: Step) {
         self.patterns[pattern_index].steps[step_index] = step;
     }
