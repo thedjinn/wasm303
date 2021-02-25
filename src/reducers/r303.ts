@@ -45,22 +45,22 @@ function makeDemoPattern(): Pattern {
 
     return {
         steps: [
-            step(39, false, false, true,  false, true),
-            step(42, false, false, true,  false, false),
-            step(44, false, false, true,  false, false),
-            step(46, false, false, true,  false, false),
-            step(49, false, false, true,  false, false),
-            step(51, false, false, true,  false, false),
-            step(46, false, false, true,  false, false),
-            step(49, false, false, true,  false, false),
-            step(39, false, false, true,  false, false),
-            step(42, false, false, true,  false, false),
-            step(44, false, false, true,  false, false),
-            step(49, false, false, true,  false, false),
-            step(48, false, false, true,  false, false),
-            step(41, false, false, false, true,  false),
-            step(40, false, false, true,  false, false),
-            step(47, false, false, false, true,  false)
+            step(39, false, false, true, false,  true),
+            step(42, false, false, true, false, false),
+            step(44, false, false, true, false, false),
+            step(46, false, false, true, false, false),
+            step(49, false, false, true, false, false),
+            step(51, false, false, true, false, false),
+            step(46, false, false, true, false, false),
+            step(49, false, false, true, false, false),
+            step(39, false, false, true, false, false),
+            step(42, false, false, true, false, false),
+            step(44, false, false, true, false, false),
+            step(49, false, false, true, false, false),
+            step(48, false, false, true, false, false),
+            step(41, false, false, true,  true, false),
+            step(40, false, false, true, false, false),
+            step(47, false, false, true,  true, false)
         ]
     };
 }
