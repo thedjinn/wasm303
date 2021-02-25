@@ -185,9 +185,13 @@ impl<'a> Iterator for ProgramIterator<'a> {
             return None;
         }
 
-        Some(Instruction {
+        let instruction = Instruction {
             operands: &self.program[self.position..self.position + operand_size],
             opcode
-        })
+        };
+
+        self.position += operand_size;
+
+        Some(instruction)
     }
 }
