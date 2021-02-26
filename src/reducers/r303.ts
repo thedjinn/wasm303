@@ -5,19 +5,25 @@ import {
     Instruction
 } from "../Engine";
 
+import {
+    Pattern,
+    Step
+} from "../types";
+
 import Opcode from "../Opcode";
 
-interface Step {
-    pitch: number;
-    octaveUp: boolean;
-    octaveDown: boolean;
-    hasNote: boolean;
-    hasSlide: boolean;
-    hasAccent: boolean;
-}
-
-interface Pattern {
-    steps: Step[];
+function makeSetPatternDataInstruction(patternIndex: number, stepIndex: number, step: Step): Instruction {
+    return {
+        opcode: Opcode.SetPatternData,
+        operand: (patternIndex << 0) +
+            (stepIndex << 8) +
+            (step.pitch << 16) +
+            (+step.octaveDown << 28) +
+            (+step.octaveUp << 27) +
+            (+step.hasSlide << 26) +
+            (+step.hasAccent << 25) +
+            (+step.hasNote << 24)
+    };
 }
 
 interface State {
@@ -49,14 +55,14 @@ function makeDemoPattern(): Pattern {
             step(42, false, false, true, false, false),
             step(44, false, false, true, false, false),
             step(46, false, false, true, false, false),
-            step(49, false, false, true, false, false),
-            step(51, false, false, true, false, false),
+            step(37,  true, false, true, false, false),
+            step(39,  true, false, true, false, false),
             step(46, false, false, true, false, false),
-            step(49, false, false, true, false, false),
+            step(37,  true, false, true, false, false),
             step(39, false, false, true, false, false),
             step(42, false, false, true, false, false),
             step(44, false, false, true, false, false),
-            step(49, false, false, true, false, false),
+            step(37,  true, false, true, false, false),
             step(48, false, false, true, false, false),
             step(41, false, false, true,  true, false),
             step(40, false, false, true, false, false),
@@ -91,6 +97,14 @@ const slice = createSlice({
     reducers: {
         setIsInitialized(state, action: PayloadAction<boolean>) {
             state.isInitialized = action.payload;
+        },
+
+        setPatternData(state, action: PayloadAction<{
+            patternIndex: number,
+            stepIndex: number,
+            step: Step
+        }>) {
+            state.patterns[action.payload.patternIndex].steps[action.payload.stepIndex] = action.payload.step;
         },
 
         setIsRunning(state, action: PayloadAction<boolean>) {
@@ -158,17 +172,7 @@ export const bootstrap = (): Thunk => async (dispatch, getState, engine) => {
     getState().r303.patterns.forEach(function(pattern, patternIndex) {
         pattern.steps.forEach(function(step, stepIndex) {
             // TODO: Convert this into one large send call
-            engine.sendInstruction({
-                opcode: Opcode.SetPatternData,
-                operand: (patternIndex << 0) +
-                    (stepIndex << 8) +
-                    (step.pitch << 16) +
-                    (+step.octaveDown << 28) +
-                    (+step.octaveUp << 27) +
-                    (+step.hasSlide << 26) +
-                    (+step.hasAccent << 25) +
-                    (+step.hasNote << 24)
-            });
+            engine.sendInstruction(makeSetPatternDataInstruction(patternIndex, stepIndex, step));
         });
     });
 
@@ -179,6 +183,19 @@ export const start = (): Thunk => (dispatch, getState, engine) => {
     engine.toggleStart();
     dispatch(setIsRunning(true));
 };
+
+export const setCurrentPatternData = (stepIndex: number, step: Step): Thunk => (dispatch, getState, engine) => {
+    const patternIndex = getState().r303.currentPatternIndex;
+    engine.sendInstruction(makeSetPatternDataInstruction(patternIndex, stepIndex, step));
+
+    dispatch(slice.actions.setPatternData({ patternIndex, stepIndex, step }));
+}
+
+export const setPatternData = (patternIndex: number, stepIndex: number, step: Step): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction(makeSetPatternDataInstruction(patternIndex, stepIndex, step));
+
+    dispatch(slice.actions.setPatternData({ patternIndex, stepIndex, step }));
+}
 
 export const setWaveformIndex = (index: number): Thunk => (dispatch, getState, engine) => {
     engine.sendInstruction({
