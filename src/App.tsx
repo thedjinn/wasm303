@@ -19,6 +19,11 @@ import {
     setEnvMod,
     setDecay,
     setAccent,
+    setDistortionThreshold,
+    setDistortionShape,
+    setDelaySend,
+    setDelayFeedback,
+    setDelayLength,
     setWaveformIndex,
     start
 } from "./reducers/r303";
@@ -35,6 +40,13 @@ export default function App(): JSX.Element {
     const envMod = useSelector((state: RootState) => state.r303.envMod);
     const decay = useSelector((state: RootState) => state.r303.decay);
     const accent = useSelector((state: RootState) => state.r303.accent);
+
+    const distortionThreshold = useSelector((state: RootState) => state.r303.distortionThreshold);
+    const distortionShape = useSelector((state: RootState) => state.r303.distortionShape);
+    const delaySend = useSelector((state: RootState) => state.r303.delaySend);
+    const delayFeedback = useSelector((state: RootState) => state.r303.delayFeedback);
+    const delayLength = useSelector((state: RootState) => state.r303.delayLength);
+
     const waveformIndex = useSelector((state: RootState) => state.r303.waveformIndex);
 
     const handleStart = useCallback(() => {
@@ -71,6 +83,26 @@ export default function App(): JSX.Element {
 
     const handleAccentChange = useCallback((value: number) => {
         dispatch(setAccent(value));
+    }, [dispatch]);
+
+    const handleDistortionThresholdChange = useCallback((value: number) => {
+        dispatch(setDistortionThreshold(value));
+    }, [dispatch]);
+
+    const handleDistortionShapeChange = useCallback((value: number) => {
+        dispatch(setDistortionShape(value));
+    }, [dispatch]);
+
+    const handleDelaySendChange = useCallback((value: number) => {
+        dispatch(setDelaySend(value));
+    }, [dispatch]);
+
+    const handleDelayFeedbackChange = useCallback((value: number) => {
+        dispatch(setDelayFeedback(value));
+    }, [dispatch]);
+
+    const handleDelayLengthChange = useCallback((value: number) => {
+        dispatch(setDelayLength(value));
     }, [dispatch]);
 
     const startRandomWalker = useCallback(() => {
@@ -129,7 +161,36 @@ export default function App(): JSX.Element {
                         </div>
                     </div>
 
-                    <div className="box" style={{flexDirection: "column", flex: 1}}>
+                    <div className="box flex-column">
+                        <div className="flex-column flex-center">
+                            <span className="label">THRESHOLD</span>
+                            <Dial value={distortionThreshold} min={0} max={1} onChange={handleDistortionThresholdChange} />
+                        </div>
+
+                        <div className="flex-column flex-center">
+                            <span className="label">SHAPE</span>
+                            <Dial value={distortionShape} min={0} max={1} onChange={handleDistortionShapeChange} />
+                        </div>
+                    </div>
+
+                    <div className="box flex-column">
+                        <div className="flex-column flex-center">
+                            <span className="label">SEND</span>
+                            <Dial value={delaySend} min={0} max={1} onChange={handleDelaySendChange} />
+                        </div>
+
+                        <div className="flex-column flex-center">
+                            <span className="label">FEEDBACK</span>
+                            <Dial value={delayFeedback} min={0} max={0.99} onChange={handleDelayFeedbackChange} />
+                        </div>
+
+                        <div className="flex-column flex-center">
+                            <span className="label">TIME</span>
+                            <Dial value={delayLength} min={50} max={2000} onChange={handleDelayLengthChange} />
+                        </div>
+                    </div>
+
+                    <div className="box flex-column flex-1">
                         <h1>r303</h1>
 
                         <div>

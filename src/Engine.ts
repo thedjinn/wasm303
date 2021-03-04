@@ -19,6 +19,7 @@ export type OpcodeWithoutOperand =
 
 export type OpcodeWithU32 =
     typeof Opcode.SetWaveformIndex |
+    typeof Opcode.SetDelayLength |
     typeof Opcode.SetSequencerStep |
     typeof Opcode.SetPatternData;
 
@@ -28,7 +29,11 @@ export type OpcodeWithF32 =
     typeof Opcode.SetResonance |
     typeof Opcode.SetEnvMod |
     typeof Opcode.SetDecay |
-    typeof Opcode.SetAccent;
+    typeof Opcode.SetAccent |
+    typeof Opcode.SetDistortionThreshold |
+    typeof Opcode.SetDistortionShape |
+    typeof Opcode.SetDelaySend |
+    typeof Opcode.SetDelayFeedback;
 
 export type Opcode =
     OpcodeWithoutOperand |

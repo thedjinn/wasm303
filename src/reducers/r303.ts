@@ -38,6 +38,13 @@ interface State {
     decay: number;
     accent: number;
 
+    distortionThreshold: number;
+    distortionShape: number;
+
+    delaySend: number;
+    delayFeedback: number;
+    delayLength: number;
+
     sequencerStep: number;
 
     patterns: Pattern[];
@@ -82,6 +89,13 @@ const initialState: State = {
     envMod: 0.2,
     decay: 150.0,
     accent: 0.2,
+
+    distortionThreshold: 0.5,
+    distortionShape: 0.5,
+
+    delaySend: 0.5,
+    delayFeedback: 0.5,
+    delayLength: 1000,
 
     sequencerStep: 0,
 
@@ -139,6 +153,26 @@ const slice = createSlice({
             state.accent = action.payload;
         },
 
+        setDistortionThreshold(state, action: PayloadAction<number>) {
+            state.distortionThreshold = action.payload;
+        },
+
+        setDistortionShape(state, action: PayloadAction<number>) {
+            state.distortionShape = action.payload;
+        },
+
+        setDelaySend(state, action: PayloadAction<number>) {
+            state.delaySend = action.payload;
+        },
+
+        setDelayFeedback(state, action: PayloadAction<number>) {
+            state.delayFeedback = action.payload;
+        },
+
+        setDelayLength(state, action: PayloadAction<number>) {
+            state.delayLength = action.payload;
+        },
+
         setSequencerStep(state, action: PayloadAction<number>) {
             state.sequencerStep = action.payload;
         }
@@ -169,6 +203,7 @@ export const bootstrap = (): Thunk => async (dispatch, getState, engine) => {
     }
 
     // Emit initial state instructions
+    // TODO: Sync initial parameter data
     getState().r303.patterns.forEach(function(pattern, patternIndex) {
         pattern.steps.forEach(function(step, stepIndex) {
             // TODO: Convert this into one large send call
@@ -258,6 +293,51 @@ export const setAccent = (accent: number): Thunk => (dispatch, getState, engine)
     });
 
     dispatch(slice.actions.setAccent(accent));
+};
+
+export const setDistortionThreshold = (threshold: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetDistortionThreshold,
+        operand: threshold
+    });
+
+    dispatch(slice.actions.setDistortionThreshold(threshold));
+};
+
+export const setDistortionShape = (shape: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetDistortionShape,
+        operand: shape
+    });
+
+    dispatch(slice.actions.setDistortionShape(shape));
+};
+
+export const setDelaySend = (send: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetDelaySend,
+        operand: send
+    });
+
+    dispatch(slice.actions.setDelaySend(send));
+};
+
+export const setDelayFeedback = (feedback: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetDelayFeedback,
+        operand: feedback
+    });
+
+    dispatch(slice.actions.setDelayFeedback(feedback));
+};
+
+export const setDelayLength = (length: number): Thunk => (dispatch, getState, engine) => {
+    engine.sendInstruction({
+        opcode: Opcode.SetDelayLength,
+        operand: length
+    });
+
+    dispatch(slice.actions.setDelayLength(length));
 };
 
 export const {
