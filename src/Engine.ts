@@ -150,8 +150,7 @@ export default class Engine {
         }
     }
 
-    sendInstruction(instruction: Instruction): void {
-        let ptr = 0;
+    encodeInstruction(instruction: Instruction, ptr: number): number {
         this.encodeBuffer[ptr++] = instruction.opcode;
 
         if (isInstructionWithU32(instruction)) {
@@ -160,6 +159,21 @@ export default class Engine {
         } else if (isInstructionWithF32(instruction)) {
             this.encodeDataView.setFloat32(ptr, instruction.operand, true);
             ptr += 4;
+        }
+
+        return ptr;
+    }
+
+    sendInstruction(instruction: Instruction): void {
+        const ptr = this.encodeInstruction(instruction, 0);
+        this.sendBuffer.write(this.encodeBuffer, ptr);
+    }
+
+    sendInstructions(instructions: Instruction[]): void {
+        let ptr = 0;
+
+        for (const instruction of instructions) {
+            ptr = this.encodeInstruction(instruction, ptr);
         }
 
         this.sendBuffer.write(this.encodeBuffer, ptr);
