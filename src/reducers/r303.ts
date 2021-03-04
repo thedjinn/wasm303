@@ -203,13 +203,28 @@ export const bootstrap = (): Thunk => async (dispatch, getState, engine) => {
     }
 
     // Emit initial state instructions
-    // TODO: Sync initial parameter data
-    getState().r303.patterns.forEach(function(pattern, patternIndex) {
-        pattern.steps.forEach(function(step, stepIndex) {
-            // TODO: Convert this into one large send call
-            engine.sendInstruction(makeSetPatternDataInstruction(patternIndex, stepIndex, step));
-        });
-    });
+    const r303 = getState().r303;
+
+    const instructions: Instruction[] = r303.patterns.flatMap(
+        (pattern, patternIndex) => pattern.steps.map(
+            (step, stepIndex) => makeSetPatternDataInstruction(patternIndex, stepIndex, step)
+        )
+    );
+
+    instructions.push({ opcode: Opcode.SetWaveformIndex, operand: r303.waveformIndex });
+    instructions.push({ opcode: Opcode.SetTuning, operand: r303.tuning });
+    instructions.push({ opcode: Opcode.SetCutoff, operand: r303.cutoff });
+    instructions.push({ opcode: Opcode.SetResonance, operand: r303.resonance });
+    instructions.push({ opcode: Opcode.SetEnvMod, operand: r303.envMod });
+    instructions.push({ opcode: Opcode.SetDecay, operand: r303.decay });
+    instructions.push({ opcode: Opcode.SetAccent, operand: r303.accent });
+    instructions.push({ opcode: Opcode.SetDistortionThreshold, operand: r303.distortionThreshold });
+    instructions.push({ opcode: Opcode.SetDistortionShape, operand: r303.distortionShape });
+    instructions.push({ opcode: Opcode.SetDelaySend, operand: r303.delaySend });
+    instructions.push({ opcode: Opcode.SetDelayFeedback, operand: r303.delayFeedback });
+    instructions.push({ opcode: Opcode.SetDelayLength, operand: r303.delayLength });
+
+    engine.sendInstructions(instructions);
 
     dispatch(slice.actions.setIsInitialized(true));
 };
