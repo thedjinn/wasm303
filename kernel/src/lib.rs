@@ -6,7 +6,7 @@ mod macros;
 
 mod delay;
 mod distortion;
-mod filters;
+pub mod filters;
 mod kernel;
 mod r303;
 mod sequencer;

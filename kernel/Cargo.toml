@@ -3,7 +3,7 @@ name = "kernel"
 version = "1.0.0"
 authors = ["Emil Loer <emil@koffietijd.net>"]
 edition = "2018"
-license = "MIT"
+license = "GPL3"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

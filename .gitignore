@@ -1,4 +1,5 @@
 /node_modules
 /dist
 /kernel/target
+/kernel/bodeplot/target
 /public/kernel.wasm
