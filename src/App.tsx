@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./reducers";
 import Backdrop from "./Backdrop";
 import Dial from "./Dial";
+import RealDial from "./RealDial";
 import RandomWalker from "./RandomWalker";
 import Led from "./Led";
 import LedButton from "./LedButton";
@@ -121,32 +122,32 @@ export default function App(): JSX.Element {
                         <div className="box flex-row narrow-spacing">
                             <div className="flex-column flex-center">
                                 <span className="label">TUNING</span>
-                                <Dial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
+                                <RealDial value={tuning} min={-12} max={12} onChange={handleTuningChange} />
                             </div>
 
                             <div className="flex-column flex-center">
                                 <span className="label">CUT OFF FREQ</span>
-                                <Dial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
+                                <RealDial value={cutoff} min={20} max={10000} onChange={handleCutoffChange} isLogarithmic />
                             </div>
 
                             <div className="flex-column flex-center">
                                 <span className="label">RESONANCE</span>
-                                <Dial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
+                                <RealDial value={resonance} min={0} max={1} onChange={handleResonanceChange} />
                             </div>
 
                             <div className="flex-column flex-center">
                                 <span className="label">ENV MOD</span>
-                                <Dial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
+                                <RealDial value={envMod} min={0} max={1} onChange={handleEnvModChange} />
                             </div>
 
                             <div className="flex-column flex-center">
                                 <span className="label">DECAY</span>
-                                <Dial value={decay} min={1} max={2000} onChange={handleDecayChange} isLogarithmic />
+                                <RealDial value={decay} min={1} max={2000} onChange={handleDecayChange} isLogarithmic />
                             </div>
 
                             <div className="flex-column flex-center">
                                 <span className="label">ACCENT</span>
-                                <Dial value={accent} min={0} max={1} onChange={handleAccentChange} />
+                                <RealDial value={accent} min={0} max={1} onChange={handleAccentChange} />
                             </div>
                         </div>
 
@@ -164,29 +165,29 @@ export default function App(): JSX.Element {
                     <div className="box flex-column">
                         <div className="flex-column flex-center">
                             <span className="label">THRESHOLD</span>
-                            <Dial value={distortionThreshold} min={0} max={1} onChange={handleDistortionThresholdChange} />
+                            <RealDial value={distortionThreshold} min={0} max={1} onChange={handleDistortionThresholdChange} />
                         </div>
 
                         <div className="flex-column flex-center">
                             <span className="label">SHAPE</span>
-                            <Dial value={distortionShape} min={0} max={1} onChange={handleDistortionShapeChange} />
+                            <RealDial value={distortionShape} min={0} max={1} onChange={handleDistortionShapeChange} />
                         </div>
                     </div>
 
                     <div className="box flex-column">
                         <div className="flex-column flex-center">
                             <span className="label">SEND</span>
-                            <Dial value={delaySend} min={0} max={1} onChange={handleDelaySendChange} />
+                            <RealDial value={delaySend} min={0} max={1} onChange={handleDelaySendChange} />
                         </div>
 
                         <div className="flex-column flex-center">
                             <span className="label">FEEDBACK</span>
-                            <Dial value={delayFeedback} min={0} max={0.99} onChange={handleDelayFeedbackChange} />
+                            <RealDial value={delayFeedback} min={0} max={0.99} onChange={handleDelayFeedbackChange} />
                         </div>
 
                         <div className="flex-column flex-center">
                             <span className="label">TIME</span>
-                            <Dial value={delayLength} min={50} max={2000} onChange={handleDelayLengthChange} />
+                            <RealDial value={delayLength} min={50} max={2000} onChange={handleDelayLengthChange} />
                         </div>
                     </div>
 
@@ -204,7 +205,7 @@ export default function App(): JSX.Element {
                     </div>
                 </div>
 
-                <div className="flex-row">
+                <div className="flex-row flex-1">
                     <div className="box dark pattern-box flex-1">
                         <Pattern />
                     </div>
