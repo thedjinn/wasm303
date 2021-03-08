@@ -46,7 +46,7 @@ button {
     cursor: pointer;
 
     border-radius: 0px;
-    box-shadow: 0px 1px 1px 0px #00000080, 0px 2px 3px #00000020;
+    box-shadow: 0px 1px 1px #00000080, 0px 1px 2px #00000020, 0px 2px 3px #00000020, 2px 4px 6px #00000040, 1px 4px 6px #00000040;
 
     border-top: none;
     border-left: 1px solid #aaa;
@@ -71,6 +71,28 @@ button {
 
     &:active {
         background: #ddd;
+        box-shadow: 0px 1px 1px #00000080, 1px 4px 6px #00000040;
+        transform: translateY(0.5px);
+    }
+
+    .dark & {
+        background: #888;
+
+        border-left-color: #555;
+        border-right-color: #555;
+        border-bottom-color: #333;
+
+        &::before {
+            border-top-color: #777;
+            border-left-color: #666;
+            border-right-color: #666;
+            border-bottom-color: #555;
+        }
+
+        &:active {
+            background: #777;
+            color: #161616;
+        }
     }
 }
 
@@ -385,7 +407,7 @@ button {
         width: 32px;
         height: 16px;
         margin-top: 6px;
-        margin-bottom: 2px;
+        margin-bottom: 3px;
     }
 }
 
