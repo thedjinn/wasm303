@@ -234,6 +234,7 @@ impl VCO {
         // apply portamento
         if self.slide_step < 64 {
             self.delta -= self.slide;
+            self.slide_step += 1;
         }
     }
 }
