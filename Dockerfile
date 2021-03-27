@@ -1,4 +1,4 @@
-FROM rust:1.49.0-buster
+FROM rust:1.51.0-buster
 
 RUN set -ex; \
     curl -sL https://deb.nodesource.com/setup_15.x | bash - && \
@@ -13,6 +13,7 @@ USER app
 WORKDIR /app
 
 RUN rustup target add wasm32-unknown-unknown
+RUN rustup component add clippy
 
 RUN mkdir -p /home/app/.npm-packages/lib
 RUN npm config set prefix /home/app/.npm-packages
